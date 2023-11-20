@@ -1,6 +1,6 @@
-# test_1
+# Avert app
 
-A new Flutter project.
+A mobile application which will act as saviour during natural calamity.
 
 ## Getting Started
 
