@@ -172,6 +172,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       createdAt: "",
       phoneNumber: "",
       uid: "",
+      lat: "123",  //Lat-Long value is getting stored
+      long: "456",
     );
     if (image != null) {
       ap.saveUserDataToFirebase(
