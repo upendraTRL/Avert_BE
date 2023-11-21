@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:test_1/provider/auth_provider.dart';
@@ -13,28 +14,44 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+//Location logic
+  Position? _currentLocation;
+  late bool servicePermission = false;
+  late LocationPermission permission;
+
+  String _currentAddress = "";
+
+  Future<Position> _getCurrentLocation() async {
+    servicePermission = await Geolocator.isLocationServiceEnabled();
+    if (!servicePermission) {
+      print('Service Disabled');
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  //Geocoding to get address
+  _getAddressFromCoordinates() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentLocation!.latitude, _currentLocation!.longitude);
+
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress =
+            "${place.subLocality}, ${place.locality}, ${place.country}";
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
-
-    //Location logic
-    Position? _currentLocation;
-    late bool servicePermission = false;
-    late LocationPermission permission;
-
-    String _currentAddress = "";
-
-    Future<Position> _getCurrentLocation() async {
-      servicePermission = await Geolocator.isLocationServiceEnabled();
-      if (!servicePermission) {
-        print('Service Disabled');
-      }
-      permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-      }
-      return await Geolocator.getCurrentPosition();
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -71,19 +88,22 @@ class _HomeScreenState extends State<HomeScreen> {
           Text(ap.userModel.phoneNumber),
           Text(ap.userModel.email),
           const SizedBox(height: 20),
-          Text("Address - "),
+          Text("Address - ${_currentAddress}"),
           const SizedBox(height: 20),
-          Text("Lat = "),
+          Text("Lat = ${_currentLocation?.latitude}"),
           const SizedBox(height: 20),
-          Text("Long = "),
+          Text("Long = ${_currentLocation?.longitude}"),
           const SizedBox(height: 50),
           SizedBox(
             width: 200,
             height: 50,
             child: CustomButton(
               onPressed: () async {
-                _currentLocation = await _getCurrentLocation();
-                print('${_currentLocation}');
+                setState(() async {
+                  _currentLocation = await _getCurrentLocation();
+                  await _getAddressFromCoordinates();
+                  print('${_currentLocation}');
+                });
               },
               text: "Get Location",
             ),
