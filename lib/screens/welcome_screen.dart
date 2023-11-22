@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/home_screen.dart';
+import 'package:test_1/screens/lang_translate.dart';
 import 'package:test_1/widgets/custome_widgets.dart';
 import 'package:test_1/screens/registration_screen.dart';
 
@@ -59,6 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => const HomeScreen(),
+                                  // builder: (context) => const TranslatorApp(),
                                 ),
                               ),
                             );
