@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:test_1/provider/auth_provider.dart';
+import 'package:test_1/screens/UI/fitness_app_home_screen.dart';
 import 'package:test_1/screens/welcome_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -19,9 +20,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: WelcomeScreen(),
+        // home: WelcomeScreen(),
+        home: FitnessAppHomeScreen(),
         title: "Authentication",
       ),
     );

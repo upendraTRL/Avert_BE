@@ -231,78 +231,134 @@ class _HomeScreenState extends State<HomeScreen> {
                 //     MaterialPageRoute(builder: (context) => MyRescuePage()));
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.language),
-              title: const Text('Languages'),
-              onTap: () {
-                // Navigator.push(context,
-                //     MaterialPageRoute(builder: (context) => MyLangPage()));
-              },
-            ),
           ],
         ),
       ),
-      body: Center(
-          child: Column(
-        // mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 20),
-          Container(
-            // padding: EdgeInsets.all(16),
-            // color: Colors.grey[200],
-            child: Card(
-              margin: EdgeInsets.only(bottom: 10, top: 20),
-              child: Padding(
-                padding: EdgeInsets.all(50),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(addressData, style: TextStyle(fontSize: 32)),
-                    SizedBox(height: 15),
-                    Text(
-                      'Temparature: 35 C \n\nCalamity: Tsunami \n\nPrecautions: Safe Location - Kothrud',
-                      style: TextStyle(fontSize: 18),
+      body: SingleChildScrollView(
+        child: Center(
+            child: Column(
+          // mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 20),
+            Container(
+              // padding: EdgeInsets.all(16),
+              // color: Colors.grey[200],
+              child: Card(
+                // color: Color.fromARGB(255, 207, 159, 255),
+                margin: EdgeInsets.only(bottom: 10, top: 20),
+                child: Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(addressData, style: TextStyle(fontSize: 32)),
+                      SizedBox(height: 15),
+                      Text(
+                        'Temparature: 35 C \n\nCalamity: Earthquake \n\nPrecautions: Safe Location - Kothrud',
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      // Text(
+                      //   '\nLatitude: $latData \n\nLongitude: $longData',
+                      //   style: TextStyle(fontSize: 18),
+                      // ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // const SizedBox(height: 10),
+            Container(
+              // padding: EdgeInsets.all(16),
+              // color: Colors.grey[200],
+              child: const Card(
+                margin: EdgeInsets.only(bottom: 10, top: 10),
+                child: Padding(
+                  padding: EdgeInsets.all(50),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Precautions', style: TextStyle(fontSize: 25)),
+                      SizedBox(height: 15),
+                      Text(
+                        '1. If you are indoors, drop to the ground, take cover under a sturdy piece of furniture, and hold on until the shaking stops.\n\n2. Turn off gas, water, and electricity if you suspect damage or if you are instructed to do so.',
+                        style: TextStyle(fontSize: 18),
+                        textAlign: TextAlign.justify,
+                      ),
+                      SizedBox(height: 20),
+                      InkWell(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text('Show More')
+                          ],
+                        ),
+                      ),
+                      // Text('Preventions', style: TextStyle(fontSize: 25)),
+                      // SizedBox(height: 15),
+                      // Text(
+                      //   '1. Educate Yourself and Your Family.\n\n2. Prepare an emergency kit that includes essentials such as water, non-perishable food, first aid supplies, flashlights, batteries, blankets, and a battery-operated radio.\n\n3. Create an emergency plan for your family, including a designated meeting place and communication methods.',
+                      //   style: TextStyle(fontSize: 18),
+                      // ),
+                      // Text(
+                      //   '\nLatitude: $latData \n\nLongitude: $longData',
+                      //   style: TextStyle(fontSize: 18),
+                      // ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            // Text(ap.userModel.phoneNumber),
+            // Text(ap.userModel.email),
+            // const SizedBox(height: 20),
+            // Text("Address - $addressData"),
+            // Text(addressData),
+            // const SizedBox(height: 20),
+            // Text("Lat = $latData"),
+            // const SizedBox(height: 20),
+            // Text("Long = $longData"),
+            // const SizedBox(height: 20),
+            SizedBox(
+              width: 200,
+              height: 50,
+              child: CustomButton(
+                onPressed: () async {
+                  setState(() async {
+                    _currentLocation = await _getCurrentLocation();
+                    await _getAddressFromCoordinates();
+                    // print('${_currentLocation}');
+                    latData = _currentLocation!.latitude.toString();
+                    longData = _currentLocation!.longitude.toString();
+                  });
+                },
+                text: "S.O.S",
+              ),
+            ),
+            TextButton(
+              onPressed: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text('Send S.O.S?'),
+                  content:
+                      const Text('Are you sure you want send S.O.S?'),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                      child: const Text('Cancel'),
                     ),
-                    Text(
-                      '\nLatitude: $latData \n\nLongitude: $longData',
-                      style: TextStyle(fontSize: 18),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, 'OK'),
+                      child: const Text('OK'),
                     ),
                   ],
                 ),
               ),
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          Text(ap.userModel.phoneNumber),
-          Text(ap.userModel.email),
-          const SizedBox(height: 20),
-          // Text("Address - $addressData"),
-          // Text(addressData),
-          const SizedBox(height: 20),
-          // Text("Lat = $latData"),
-          const SizedBox(height: 20),
-          // Text("Long = $longData"),
-          const SizedBox(height: 50),
-          SizedBox(
-            width: 200,
-            height: 50,
-            child: CustomButton(
-              onPressed: () async {
-                setState(() async {
-                  _currentLocation = await _getCurrentLocation();
-                  await _getAddressFromCoordinates();
-                  // print('${_currentLocation}');
-                  latData = _currentLocation!.latitude.toString();
-                  longData = _currentLocation!.longitude.toString();
-                });
-              },
-              text: "S.O.S",
-            ),
-          )
-        ],
-      )),
+              child: const Text('Show Dialog'),
+            )
+          ],
+        )),
+      ),
     );
   }
 }
