@@ -2,7 +2,6 @@ import 'dart:math' as math;
 import 'package:hexcolor/hexcolor.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
 import 'package:test_1/screens/UI/models/tabIcon_data.dart';
-import 'package:test_1/main.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -25,6 +24,8 @@ class BottomBarView extends StatefulWidget {
 class _BottomBarViewState extends State<BottomBarView>
     with TickerProviderStateMixin {
   AnimationController? animationController;
+
+  //MongoDB
 
   @override
   void initState() {
