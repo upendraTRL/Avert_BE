@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_1/provider/auth_provider.dart';
+import 'package:test_1/screens/UI/fitness_app_home_screen.dart';
 import 'package:test_1/screens/home_screen.dart';
 import 'package:test_1/screens/lang_translate.dart';
 import 'package:test_1/widgets/custome_widgets.dart';
@@ -59,7 +60,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               () => Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const HomeScreen(),
+                                  builder: (context) => FitnessAppHomeScreen(),
                                   // builder: (context) => const TranslatorApp(),
                                 ),
                               ),

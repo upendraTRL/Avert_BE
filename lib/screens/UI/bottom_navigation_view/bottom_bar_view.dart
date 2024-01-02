@@ -76,6 +76,17 @@ class _BottomBarViewState extends State<BottomBarView>
     }
   }
 
+  bool isLoc = false;
+  _checkLocOn(isLoc) {
+    if (isLoc) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('S.O.S Sent! Help is on it\'s way!'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -218,34 +229,47 @@ class _BottomBarViewState extends State<BottomBarView>
                             //   });
                             // },
                             //-------------------------------------DialoguBox
-                            // onPressed: () => showDialog<String>(
-                            //   context: context,
-                            //   builder: (BuildContext context) => AlertDialog(
-                            //     title: const Text('Send S.O.S?'),
-                            //     content: const Text(
-                            //         'Are you sure you want send S.O.S?'),
-                            //     actions: <Widget>[
-                            //       TextButton(
-                            //         onPressed: () =>
-                            //             Navigator.pop(context, 'Cancel'),
-                            //         child: const Text('Cancel'),
-                            //       ),
-                            //       TextButton(
-                            //         onPressed: () =>
-                            //             Navigator.pop(context, 'OK'),
-                            //         child: const Text('OK'),
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
+                            onPressed: () => showDialog<String>(
+                              context: context,
+                              builder: (BuildContext context) => AlertDialog(
+                                title: const Text('Send S.O.S?'),
+                                content: const Text(
+                                    'Are you sure you want send S.O.S?'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'Cancel'),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      Navigator.pop(context, 'OK');
+                                      setState(() async {
+                                        _currentLocation =
+                                            await _getCurrentLocation();
+                                        await _getAddressFromCoordinates();
+                                        // print('${_currentLocation}');
+                                        latData = _currentLocation!.latitude
+                                            .toString();
+                                        longData = _currentLocation!.longitude
+                                            .toString();
+                                        isLoc = true;
+                                        await _checkLocOn(isLoc);
+                                      });
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ],
+                              ),
+                            ),
                             //-------------------------------------SNACKBAR
-                            onPressed: () {
-                              final snackBar = SnackBar(
-                                content: const Text('S.O.S Sent! Help is on it\'s way!'),
-                              );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                            },
+                            // onPressed: () {
+                            //   final snackBar = SnackBar(
+                            //     content: const Text('S.O.S Sent! Help is on it\'s way!'),
+                            //   );
+                            //   ScaffoldMessenger.of(context)
+                            //       .showSnackBar(snackBar);
+                            // },
                             child: const Text(
                               'S.O.S',
                               style: TextStyle(
