@@ -217,18 +217,6 @@ class _BottomBarViewState extends State<BottomBarView>
                         color: Colors.transparent,
                         child: Center(
                           child: TextButton(
-                            //-------------------------------------Loc Access
-                            // onPressed: () async {
-                            //   setState(() async {
-                            //     _currentLocation = await _getCurrentLocation();
-                            //     await _getAddressFromCoordinates();
-                            //     // print('${_currentLocation}');
-                            //     latData = _currentLocation!.latitude.toString();
-                            //     longData =
-                            //         _currentLocation!.longitude.toString();
-                            //   });
-                            // },
-                            //-------------------------------------DialoguBox
                             onPressed: () => showDialog<String>(
                               context: context,
                               builder: (BuildContext context) => AlertDialog(
@@ -262,14 +250,6 @@ class _BottomBarViewState extends State<BottomBarView>
                                 ],
                               ),
                             ),
-                            //-------------------------------------SNACKBAR
-                            // onPressed: () {
-                            //   final snackBar = SnackBar(
-                            //     content: const Text('S.O.S Sent! Help is on it\'s way!'),
-                            //   );
-                            //   ScaffoldMessenger.of(context)
-                            //       .showSnackBar(snackBar);
-                            // },
                             child: const Text(
                               'S.O.S',
                               style: TextStyle(
