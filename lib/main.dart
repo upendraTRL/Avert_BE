@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:test_1/mongodb/mongodb.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/welcome_screen.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await MongoDatabase.connect();
   runApp(const MyApp());
 }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
 import 'package:test_1/provider/auth_provider.dart';
+import 'package:test_1/screens/UI/fitness_app_home_screen.dart';
 import 'package:test_1/screens/home_screen.dart';
 import 'package:test_1/screens/user_Info_screen.dart';
 import 'package:test_1/utils/utils.dart';
@@ -157,7 +158,7 @@ class _OtpScreenState extends State<OtpScreen> {
                                 (value) => Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const HomeScreen(),
+                                      builder: (context) => FitnessAppHomeScreen(),
                                     ),
                                     (route) => false),
                               ),

@@ -10,6 +10,8 @@ class UserModel {
   String createdAt;
   String phoneNumber;
   String uid;
+  String lat;
+  String long;
 
   UserModel({
     required this.name,
@@ -18,6 +20,8 @@ class UserModel {
     required this.phoneNumber,
     required this.profilePic,
     required this.uid,
+    required this.lat,
+    required this.long,
   });
 
   factory UserModel.fromMap(Map<String, dynamic> map) {
@@ -28,6 +32,8 @@ class UserModel {
       phoneNumber: map['phoneNumber'] ?? '',
       createdAt: map['createdAt'] ?? '',
       profilePic: map['profilePic'] ?? '',
+      lat: map['lat'] ?? '',
+      long: map['long'] ?? '',
     );
   }
 
@@ -39,6 +45,8 @@ class UserModel {
       "profilePic": profilePic,
       "phoneNumber": phoneNumber,
       "createdAt": createdAt,
+      "lat": lat,
+      "long": long,
     };
   }
 }
