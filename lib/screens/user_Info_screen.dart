@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_1/models/user_model.dart';
+import 'package:test_1/mongodb/model_firebase.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/home_screen.dart';
 import 'package:test_1/utils/utils.dart';
@@ -172,7 +172,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       createdAt: "",
       phoneNumber: "",
       uid: "",
-      lat: "123",  //Lat-Long value is getting stored
+      lat: "123", //Lat-Long value is getting stored
       long: "456",
     );
     if (image != null) {

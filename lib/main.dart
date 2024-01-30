@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // await MongoDatabase.connect();
+  await MongoDatabase.connect();
   runApp(const MyApp());
 }
 

@@ -1,55 +1,57 @@
-// import 'dart:developer';
+import 'dart:developer';
 
-// import 'package:mongo_dart/mongo_dart.dart';
-// import 'package:test_1/mongodb/constant.dart';
+import 'package:mongo_dart/mongo_dart.dart';
+import 'package:test_1/mongodb/constant.dart';
+import 'package:test_1/mongodb/user_model.dart';
 
-// class MongoDatabase {
-//   MongoDatabase({required this.enteredPhone});
+class MongoDatabase {
+  static var db, userCollection;
 
-//   final String enteredPhone;
+  static connect() async {
+    db = await Db.create(MONGO_CONN_URL);
+    await db.open();
+    print('Inspect - ');
+    inspect(db);
+    userCollection = db.collection(USER_COLLECTION);
+  }
 
-//   static connect() async {
-//     print('Phoneeeeeeeeee - ' + enteredPhone);
-//     var db = await Db.create(MONGO_URL);
-//     await db.open();
-//     inspect(db);
-//     var status = db.serverStatus();
-//     print("Status = " + status.toString());
+  static Future<List<Map<String, dynamic>>> getData() async {
+    final arrData = await userCollection.find().toList();
+    return arrData;
+  }
 
-//     //Opening collection
-//     var collection = db.collection(COLLECTION_NAME);
+  //USE FOR QUERY
+  static Future<List<Map<String, dynamic>>> getQueryData() async {
+    // var whereCondition = "where.gt('latitude',${150}).lt('longitude',${170})";
+    final data = await userCollection
+        .find(where.gt('latitude', '100').lt('latitude', '200'))
+        .toList();
+    return data;
+  }
 
-//     //Check existing user
-//     //To_Do - Add user entered phone number in '9689061841'
-//     var exist = await collection.find({'phone': enteredPhone}).toList();
+  static Future<void> update(Model data) async {
+    //Mongo CRUD - https://pub.dev/packages/mongo_dart
 
-//     if (exist.isEmpty) {
-//       //USER DOESN'T EXIST, ADD NEW RECORD
-//       await collection.insertOne({
-//         "phone": "9689061841",
-//         "address": "Pimple Gurav, Pune",
-//         "latitude": "19.530823",
-//         "longitude": "72.847466",
-//         "date_time": "3/1/2024, 11:01:00",
-//         "exists": "true"
-//       });
+    var response = await userCollection.findOne({"mobile": data.mobile});
+    response["mobile"] = data.mobile;
+    response["lat"] = "999";
+    response["long"] = "555";
+    await userCollection.replaceOne({"mobile": data.mobile}, response);
 
-//       var listAll = await collection.find().toList();
-//       print("NEW RECORD = $listAll");
-//     } else {
-//       //USER EXIST'S, UPDATE CURRENT RECORD
-//       print("USER EXITS");
-//       print("BEFORE UPDATE = ${exist[0]}");
+    inspect(response);
+  }
 
-//       final filter = where.eq('phone', '9689061841');
-//       final update = modify.set('latitude', '0').set('longitude', '0');
-//       await collection.update(filter, update, multiUpdate: true);
-
-//       var userUpdated = await collection.find({'phone': '9689061841'}).toList();
-//       print("AFTER UPDATE = ${userUpdated[0]}");
-//     }
-
-//     // Fetch and display all records
-//     print(await collection.find().toList());
-//   }
-// }
+  static Future<String> insert(Model data) async {
+    try {
+      var result = await userCollection.insertOne(data.toJson());
+      if (result.isSuccess) {
+        return 'Data Inserted';
+      } else {
+        return 'Something went wrong while inserting!';
+      }
+    } catch (e) {
+      print('Insert Exception - $e');
+      return e.toString();
+    }
+  }
+}

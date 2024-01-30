@@ -7,7 +7,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 // import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:test_1/models/user_model.dart';
+import 'package:test_1/mongodb/model_firebase.dart';
+import 'package:test_1/mongodb/user_model.dart';
 import 'package:test_1/screens/otp_screen.dart';
 import 'package:test_1/utils/utils.dart';
 
@@ -59,7 +60,8 @@ class AuthProvider extends ChangeNotifier {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => OtpScreen(verificationId: verificationId),
+                builder: (context) => OtpScreen(
+                    verificationId: verificationId, mobile: phoneNumber),
               ),
             );
           },

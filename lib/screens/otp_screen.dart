@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pinput.dart';
 import 'package:provider/provider.dart';
+import 'package:test_1/mongodb/mongodb.dart';
+import 'package:test_1/mongodb/user_model.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/UI/fitness_app_home_screen.dart';
 import 'package:test_1/screens/home_screen.dart';
@@ -9,9 +11,11 @@ import 'package:test_1/utils/utils.dart';
 import 'package:test_1/widgets/custome_widgets.dart';
 
 class OtpScreen extends StatefulWidget {
-  const OtpScreen({super.key, required this.verificationId});
+  const OtpScreen(
+      {super.key, required this.verificationId, required this.mobile});
 
   final String verificationId;
+  final String mobile;
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
@@ -108,7 +112,10 @@ class _OtpScreenState extends State<OtpScreen> {
                           text: "Verify",
                           onPressed: () {
                             if (otpCode != null) {
-                              verifyOtp(context, otpCode!);
+                              verifyOtp(
+                                context,
+                                otpCode!,
+                              );
                             } else {
                               showSnackBar(context, "Enter 6-Digit code");
                             }
@@ -152,13 +159,15 @@ class _OtpScreenState extends State<OtpScreen> {
           (value) async {
             if (value == true) {
               // user exists in our app
+              await _insertData(widget.mobile, '111', '222');
               ap.getDataFromFirestore().then(
                     (value) => ap.saveUserDataToSP().then(
                           (value) => ap.setSignIn().then(
                                 (value) => Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => FitnessAppHomeScreen(),
+                                      builder: (context) =>
+                                          FitnessAppHomeScreen(),
                                     ),
                                     (route) => false),
                               ),
@@ -175,5 +184,15 @@ class _OtpScreenState extends State<OtpScreen> {
         );
       },
     );
+  }
+
+  //MongoDB functions
+  Future<void> _insertData(String mobileNo, String lat, String long) async {
+    // var _id = M.ObjectId(); //THIS WILL USE FOR UNIQUE ID
+    final data = Model(mobile: mobileNo, lat: lat, long: long);
+    // var result = await MongoDatabase.insert(data);
+    await MongoDatabase.insert(data);
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Inserted ID - $mobileNo")));
   }
 }
