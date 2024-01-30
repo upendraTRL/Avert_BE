@@ -167,7 +167,9 @@ class _OtpScreenState extends State<OtpScreen> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          FitnessAppHomeScreen(),
+                                          FitnessAppHomeScreen(
+                                        mobile: widget.mobile,
+                                      ),
                                     ),
                                     (route) => false),
                               ),

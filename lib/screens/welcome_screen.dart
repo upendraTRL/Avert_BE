@@ -62,7 +62,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                               () => Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => FitnessAppHomeScreen(),
+                                  builder: (context) => FitnessAppHomeScreen(
+                                    mobile: ap.userModel.phoneNumber,
+                                  ),
                                   // builder: (context) => const TranslatorApp(),
                                 ),
                               ),

@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:test_1/mongodb/mongodb.dart';
+import 'package:test_1/mongodb/user_model.dart';
 import 'package:test_1/screens/UI/ui_view/area_list_view.dart';
 import 'package:test_1/screens/UI/ui_view/mediterranean_diet_view.dart';
 import 'package:test_1/screens/UI/ui_view/title_view.dart';
@@ -9,9 +13,13 @@ import 'package:flutter/material.dart';
 import 'package:translator/translator.dart';
 
 class MyDiaryScreen extends StatefulWidget {
-  const MyDiaryScreen({Key? key, this.animationController}) : super(key: key);
+  const MyDiaryScreen(
+      {Key? key, this.animationController, required this.mobile})
+      : super(key: key);
 
   final AnimationController? animationController;
+  final String mobile;
+
   @override
   _MyDiaryScreenState createState() => _MyDiaryScreenState();
 }
@@ -30,8 +38,16 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
 
+  String locationStatus = 'false';
+
   @override
   void initState() {
+    _startLocation(); //Calling location access function
+    if (locationStatus == 'true') {
+      _updateData(widget.mobile, latData, longData);
+      print('LOCATION UPDATED');
+    }
+
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
         CurvedAnimation(
             parent: widget.animationController!,
@@ -255,6 +271,58 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
     }
   }
 
+  //Location logic
+  Position? _currentLocation;
+  late bool servicePermission = false;
+  late LocationPermission permission;
+
+  Future<Position> _getCurrentLocation() async {
+    servicePermission = await Geolocator.isLocationServiceEnabled();
+    if (!servicePermission) {
+      print('Service Disabled');
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  //Geocoding to get address
+  _getAddressFromCoordinates() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentLocation!.latitude, _currentLocation!.longitude);
+
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress =
+            "${place.subLocality}, ${place.locality}, ${place.country}";
+        addressData = _currentAddress;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  _startLocation() async {
+    print('LOCATION CALLED');
+    _currentLocation = await _getCurrentLocation();
+    await _getAddressFromCoordinates();
+    // print('${_currentLocation}');
+    latData = _currentLocation!.latitude.toString();
+    longData = _currentLocation!.longitude.toString();
+    // setState(() {});
+    locationStatus = 'true';
+  }
+
+//MongoDB functions
+  Future<void> _updateData(String mobileNo, String lat, String long) async {
+    final updateData = Model(mobile: mobileNo, lat: lat, long: long);
+    await MongoDatabase.update(updateData)
+        .whenComplete(() => Navigator.pop(context));
+  }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -264,6 +332,8 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
 
   @override
   Widget build(BuildContext context) {
+    // _startLocation();
+    print('HOME CALLED');
     return Container(
       color: FitnessAppTheme.background,
       child: Scaffold(
