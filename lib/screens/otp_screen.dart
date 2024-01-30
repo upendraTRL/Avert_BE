@@ -159,7 +159,7 @@ class _OtpScreenState extends State<OtpScreen> {
           (value) async {
             if (value == true) {
               // user exists in our app
-              await _insertData(widget.mobile, '111', '222');
+              await _updateData(widget.mobile, '000', '000');
               ap.getDataFromFirestore().then(
                     (value) => ap.saveUserDataToSP().then(
                           (value) => ap.setSignIn().then(
@@ -177,7 +177,9 @@ class _OtpScreenState extends State<OtpScreen> {
               //New user
               Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => UserInfoScreen()),
+                  MaterialPageRoute(
+                    builder: (context) => const UserInfoScreen(),
+                  ),
                   (route) => false);
             }
           },
@@ -187,6 +189,13 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 
   //MongoDB functions
+
+  Future<void> _updateData(String mobileNo, String lat, String long) async {
+    final updateData = Model(mobile: mobileNo, lat: lat, long: long);
+    await MongoDatabase.update(updateData)
+        .whenComplete(() => Navigator.pop(context));
+  }
+
   Future<void> _insertData(String mobileNo, String lat, String long) async {
     // var _id = M.ObjectId(); //THIS WILL USE FOR UNIQUE ID
     final data = Model(mobile: mobileNo, lat: lat, long: long);

@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:test_1/mongodb/model_firebase.dart';
+import 'package:test_1/mongodb/mongodb.dart';
+import 'package:test_1/mongodb/user_model.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/home_screen.dart';
 import 'package:test_1/utils/utils.dart';
@@ -19,6 +21,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   File? image;
   final nameController = TextEditingController();
   final emailController = TextEditingController();
+  final mobileController = TextEditingController();
 
   @override
   void dispose() {
@@ -26,6 +29,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     super.dispose();
     nameController.dispose();
     emailController.dispose();
+    mobileController.dispose();
   }
 
   //Image selection
@@ -93,6 +97,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                               inputType: TextInputType.emailAddress,
                               maxLines: 1,
                               controller: emailController,
+                            ),
+
+                            // mobile
+                            textFeld(
+                              hintText: "911111111",
+                              icon: Icons.email,
+                              inputType: TextInputType.emailAddress,
+                              maxLines: 1,
+                              controller: mobileController,
                             ),
                           ],
                         ),
@@ -170,7 +183,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       email: emailController.text.trim(),
       profilePic: "",
       createdAt: "",
-      phoneNumber: "",
+      phoneNumber: mobileController.text.trim(),
       uid: "",
       lat: "123", //Lat-Long value is getting stored
       long: "456",
@@ -180,7 +193,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         context: context,
         userModel: userModel,
         profilePic: image!,
-        onSuccess: () {
+        onSuccess: () async {
+          await _insertData(mobileController.text.trim(), '111', '222');
+
           ap.saveUserDataToSP().then(
                 (value) => ap.setSignIn().then(
                       (value) => Navigator.pushAndRemoveUntil(
@@ -196,5 +211,15 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     } else {
       showSnackBar(context, "Please upload your profile photo");
     }
+  }
+
+  //MongoDB Functions
+  Future<void> _insertData(String mobileNo, String lat, String long) async {
+    // var _id = M.ObjectId(); //THIS WILL USE FOR UNIQUE ID
+    final data = Model(mobile: mobileNo, lat: lat, long: long);
+    // var result = await MongoDatabase.insert(data);
+    await MongoDatabase.insert(data);
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text("Inserted ID - $mobileNo")));
   }
 }

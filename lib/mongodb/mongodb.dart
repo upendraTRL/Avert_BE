@@ -34,8 +34,8 @@ class MongoDatabase {
 
     var response = await userCollection.findOne({"mobile": data.mobile});
     response["mobile"] = data.mobile;
-    response["lat"] = "999";
-    response["long"] = "555";
+    response["lat"] = data.lat;
+    response["long"] = data.long;
     await userCollection.replaceOne({"mobile": data.mobile}, response);
 
     inspect(response);

@@ -127,19 +127,22 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.purple,
         title: const Text("Avert"),
         actions: [
-          IconButton(
-            onPressed: () {
-              ap.userSignOut().then(
-                    (value) => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const WelcomeScreen(),
-                      ),
-                    ),
-                  );
-            },
-            icon: const Icon(Icons.exit_to_app),
-          ),
+          // IconButton(
+          //   onPressed: () {
+          //     ap.userSignOut().then(
+          //           (value) => Navigator.push(
+          //             context,
+          //             MaterialPageRoute(
+          //               builder: (context) => const WelcomeScreen(),
+          //             ),
+          //           ),
+          //         );
+          //   },
+          //   icon: const Icon(
+          //     Icons.exit_to_app,
+          //     color: Colors.black,
+          //   ),
+          // ),
           DropdownButton(
             value: selectedvalue2,
             focusColor: Colors.transparent,
@@ -289,9 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       InkWell(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text('Show More')
-                          ],
+                          children: [Text('Show More')],
                         ),
                       ),
                       // Text('Preventions', style: TextStyle(fontSize: 25)),
@@ -340,8 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
                   title: const Text('Send S.O.S?'),
-                  content:
-                      const Text('Are you sure you want send S.O.S?'),
+                  content: const Text('Are you sure you want send S.O.S?'),
                   actions: <Widget>[
                     TextButton(
                       onPressed: () => Navigator.pop(context, 'Cancel'),

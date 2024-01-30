@@ -1,8 +1,12 @@
 import 'package:hexcolor/hexcolor.dart';
+import 'package:provider/provider.dart';
+import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
 import 'package:test_1/main.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
+
+import 'package:test_1/screens/welcome_screen.dart';
 
 class MediterranesnDietView extends StatelessWidget {
   final AnimationController? animationController;
@@ -14,6 +18,7 @@ class MediterranesnDietView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ap = Provider.of<AuthProvider>(context, listen: false);
     return AnimatedBuilder(
       animation: animationController!,
       builder: (BuildContext context, Widget? child) {
@@ -73,6 +78,23 @@ class MediterranesnDietView extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: <Widget>[
+                                            IconButton(
+                                              onPressed: () {
+                                                ap.userSignOut().then(
+                                                      (value) => Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const WelcomeScreen(),
+                                                        ),
+                                                      ),
+                                                    );
+                                              },
+                                              icon: const Icon(
+                                                Icons.exit_to_app,
+                                                color: Colors.black,
+                                              ),
+                                            ),
                                             Padding(
                                               padding: const EdgeInsets.only(
                                                   left: 4, bottom: 2),
