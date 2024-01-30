@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:test_1/mongodb/mongodb.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/widgets/custome_widgets.dart';
 
@@ -70,6 +71,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // print("Calledddddddddddddddd");
       final ap = Provider.of<AuthProvider>(context, listen: false);
       String phoneNumber = phoneController.text.trim();
+      // MongoDatabase(enteredPhone: phoneNumber);
       ap.signInWithPhone(context, "+91$phoneNumber");
     }
 
