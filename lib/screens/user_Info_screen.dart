@@ -6,12 +6,16 @@ import 'package:test_1/mongodb/model_firebase.dart';
 import 'package:test_1/mongodb/mongodb.dart';
 import 'package:test_1/mongodb/user_model.dart';
 import 'package:test_1/provider/auth_provider.dart';
+import 'package:test_1/screens/UI/fitness_app_home_screen.dart';
+import 'package:test_1/screens/UI/my_diary/my_diary_screen.dart';
 import 'package:test_1/screens/home_screen.dart';
 import 'package:test_1/utils/utils.dart';
 import 'package:test_1/widgets/custome_widgets.dart';
 
 class UserInfoScreen extends StatefulWidget {
-  const UserInfoScreen({super.key});
+  const UserInfoScreen({super.key, required this.mobile});
+
+  final String mobile;
 
   @override
   State<UserInfoScreen> createState() => _UserInfoScreenState();
@@ -21,7 +25,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   File? image;
   final nameController = TextEditingController();
   final emailController = TextEditingController();
-  final mobileController = TextEditingController();
 
   @override
   void dispose() {
@@ -29,7 +32,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     super.dispose();
     nameController.dispose();
     emailController.dispose();
-    mobileController.dispose();
   }
 
   //Image selection
@@ -100,12 +102,43 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             ),
 
                             // mobile
-                            textFeld(
-                              hintText: "911111111",
-                              icon: Icons.email,
-                              inputType: TextInputType.emailAddress,
-                              maxLines: 1,
-                              controller: mobileController,
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: TextFormField(
+                                cursorColor: Colors.purple,
+                                readOnly: true,
+                                decoration: InputDecoration(
+                                  prefixIcon: Container(
+                                    margin: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Colors.purple,
+                                    ),
+                                    child: const Icon(
+                                      Icons.phone,
+                                      size: 20,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: const BorderSide(
+                                      color: Colors.transparent,
+                                    ),
+                                  ),
+                                  hintText: widget.mobile,
+                                  alignLabelWithHint: true,
+                                  border: InputBorder.none,
+                                  fillColor: Colors.purple.shade50,
+                                  filled: true,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -183,7 +216,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       email: emailController.text.trim(),
       profilePic: "",
       createdAt: "",
-      phoneNumber: mobileController.text.trim(),
+      phoneNumber: widget.mobile,
       uid: "",
       lat: "123", //Lat-Long value is getting stored
       long: "456",
@@ -194,14 +227,20 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         userModel: userModel,
         profilePic: image!,
         onSuccess: () async {
-          await _insertData(mobileController.text.trim(), '111', '222');
+          await _insertData(widget.mobile, '111', '222');
 
           ap.saveUserDataToSP().then(
                 (value) => ap.setSignIn().then(
                       (value) => Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
+                            builder: (context) =>
+                                // FitnessAppHomeScreen(mobile: widget.mobile),
+                                // FitnessAppHomeScreen(),
+                                FitnessAppHomeScreen(mobile: '+919689061841'),
+                            // builder: (context) => MyDiaryScreen(
+                            //     // mobile: widget.mobile
+                            //     ),
                           ),
                           (route) => false),
                     ),
@@ -216,7 +255,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   //MongoDB Functions
   Future<void> _insertData(String mobileNo, String lat, String long) async {
     // var _id = M.ObjectId(); //THIS WILL USE FOR UNIQUE ID
-    final data = Model(mobile: mobileNo, lat: lat, long: long);
+    final data = Model(mobile: mobileNo, latitude: lat, longitude: long);
     // var result = await MongoDatabase.insert(data);
     await MongoDatabase.insert(data);
     ScaffoldMessenger.of(context)

@@ -159,17 +159,17 @@ class _OtpScreenState extends State<OtpScreen> {
           (value) async {
             if (value == true) {
               // user exists in our app
-              await _updateData(widget.mobile, '000', '000');
+              print('MOBILE - ${widget.mobile}');
+              await _updateData(widget.mobile, '73646', '764329'); //WORKING
               ap.getDataFromFirestore().then(
                     (value) => ap.saveUserDataToSP().then(
                           (value) => ap.setSignIn().then(
                                 (value) => Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          FitnessAppHomeScreen(
-                                        mobile: widget.mobile,
-                                      ),
+                                      builder: (context) => FitnessAppHomeScreen(mobile: widget.mobile),
+                                      // builder: (context) => FitnessAppHomeScreen(mobile: '+919689061841'),
+                                      // builder: (context) => FitnessAppHomeScreen(),
                                     ),
                                     (route) => false),
                               ),
@@ -180,7 +180,8 @@ class _OtpScreenState extends State<OtpScreen> {
               Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const UserInfoScreen(),
+                    builder: (context) => UserInfoScreen(mobile: widget.mobile),
+                    // builder: (context) => UserInfoScreen(mobile: '9689061841'),
                   ),
                   (route) => false);
             }
@@ -193,14 +194,14 @@ class _OtpScreenState extends State<OtpScreen> {
   //MongoDB functions
 
   Future<void> _updateData(String mobileNo, String lat, String long) async {
-    final updateData = Model(mobile: mobileNo, lat: lat, long: long);
+    final updateData = Model(mobile: mobileNo, latitude: lat, longitude: long);
     await MongoDatabase.update(updateData)
         .whenComplete(() => Navigator.pop(context));
   }
 
   Future<void> _insertData(String mobileNo, String lat, String long) async {
     // var _id = M.ObjectId(); //THIS WILL USE FOR UNIQUE ID
-    final data = Model(mobile: mobileNo, lat: lat, long: long);
+    final data = Model(mobile: mobileNo, latitude: lat, longitude: long);
     // var result = await MongoDatabase.insert(data);
     await MongoDatabase.insert(data);
     ScaffoldMessenger.of(context)

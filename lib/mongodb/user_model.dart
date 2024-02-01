@@ -10,26 +10,29 @@ class Model {
   // ObjectId id;
   String mobile;
   // String fname;
-  String lat;
-  String long;
+  String latitude;
+  String longitude;
   // String address;
 
   Model({
     // required this.id,
     required this.mobile,
     // required this.fname,
-    required this.lat,
-    required this.long,
+    required this.latitude,
+    required this.longitude,
     // required this.address,
   });
 
-  factory Model.fromJson(Map<String, dynamic> json) =>
-      Model(mobile: json['mobile'], lat: json['lat'], long: json['long']);
+  factory Model.fromJson(Map<String, dynamic> json) => Model(
+        mobile: json['mobile'],
+        latitude: json['latitude'],
+        longitude: json['longitude'],
+      );
 
   Map<String, dynamic> toJson() => {
         // "_id": id,
         "mobile": mobile,
-        "lat": lat,
-        "long": long,
+        "latitude": latitude,
+        "longitude": longitude,
       };
 }

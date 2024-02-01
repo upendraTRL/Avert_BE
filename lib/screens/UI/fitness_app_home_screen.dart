@@ -6,6 +6,7 @@ import 'fitness_app_theme.dart';
 import 'my_diary/my_diary_screen.dart';
 
 class FitnessAppHomeScreen extends StatefulWidget {
+  // const FitnessAppHomeScreen({super.key});
   const FitnessAppHomeScreen({super.key, required this.mobile});
 
   final String mobile;
@@ -26,6 +27,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
   @override
   void initState() {
+    print('THHHHHH - ${widget.mobile}');
     tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
     });
@@ -34,7 +36,9 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
     tabBody = MyDiaryScreen(
-        mobile: widget.mobile, animationController: animationController);
+      // mobile: widget.mobile,
+      animationController: animationController,
+    );
     super.initState();
   }
 
@@ -46,7 +50,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
   @override
   Widget build(BuildContext context) {
-    print('PHONE IN HUME - ${widget.mobile}');
+    // print('PHONE IN HUME - ${widget.mobile}');
     return Container(
       color: FitnessAppTheme.background,
       child: Scaffold(
@@ -92,7 +96,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                 }
                 setState(() {
                   tabBody = MyDiaryScreen(
-                      mobile: widget.mobile,
+                      // mobile: widget.mobile,
                       animationController: animationController);
                 });
               });
