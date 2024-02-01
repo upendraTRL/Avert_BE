@@ -216,7 +216,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       email: emailController.text.trim(),
       profilePic: "",
       createdAt: "",
-      phoneNumber: widget.mobile,
+      // phoneNumber: widget.mobile,
+      phoneNumber: "",
       uid: "",
       lat: "123", //Lat-Long value is getting stored
       long: "456",
@@ -235,8 +236,8 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                FitnessAppHomeScreen(mobile: widget.mobile),
-                                // FitnessAppHomeScreen(),
+                                // FitnessAppHomeScreen(mobile: widget.mobile),
+                                FitnessAppHomeScreen(),
                                 // FitnessAppHomeScreen(mobile: '+919689061841'),
                             // builder: (context) => MyDiaryScreen(
                             //     // mobile: widget.mobile

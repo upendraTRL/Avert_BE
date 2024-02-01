@@ -119,8 +119,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ap = Provider.of<AuthProvider>(context, listen: false);
-    String username = ap.userModel.name;
+    // final ap = Provider.of<AuthProvider>(context, listen: false);
+    // String username = ap.userModel.name;
 
     return Scaffold(
       appBar: AppBar(
