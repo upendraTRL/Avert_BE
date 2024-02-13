@@ -8,6 +8,10 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:translator/translator.dart';
 
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:test_1/l10n/l10n.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class MyDiaryScreen extends StatefulWidget {
   const MyDiaryScreen({Key? key, this.animationController}) : super(key: key);
 
@@ -97,6 +101,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
     listViews.add(
       TitleView(
         titleTxt: 'Updates',
+        // titleTxt: (updateTitle),
         // subTxt: 'Customize',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(

@@ -27,7 +27,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: const MaterialApp(
-        locale: Locale('en'),
+        locale: Locale('fr'),
+        supportedLocales: [
+          Locale('en'),
+          Locale('fr'),
+        ],
         localizationsDelegates: [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -38,7 +42,8 @@ class MyApp extends StatelessWidget {
         home: WelcomeScreen(),
         // home: MyDiaryScreen(mobile: '+919689061841'),
         // home: MyDiaryScreen(),
-        title: "Authentication",
+        // title: "Authentication",
+        title: 'Authentication',
       ),
     );
   }

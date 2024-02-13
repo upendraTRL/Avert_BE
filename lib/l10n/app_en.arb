@@ -1,14 +1,6 @@
 {
-    "language": "English",
-    "@language":{
-        "description": "The current Language"
-    },
-    "helloWorld": "Hello World!",
+    "helloWorld": "Hello World",
     "@helloWorld": {
-        "description": "A programmer greeting"
-    },
-    "multiLanguage": "Multi Language",
-    "@multiLanguage": {
-        "description": "App title"
+        "description": "The Krsna"
     }
 }

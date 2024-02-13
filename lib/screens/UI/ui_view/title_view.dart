@@ -1,6 +1,8 @@
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class TitleView extends StatelessWidget {
   final String titleTxt;
   final String subTxt;
@@ -9,8 +11,8 @@ class TitleView extends StatelessWidget {
 
   const TitleView(
       {Key? key,
-      this.titleTxt= "",
-      this.subTxt= "",
+      this.titleTxt = "",
+      this.subTxt = "",
       this.animationController,
       this.animation})
       : super(key: key);
@@ -32,7 +34,9 @@ class TitleView extends StatelessWidget {
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        titleTxt,
+                        (titleTxt == 'Updates')
+                            ? AppLocalizations.of(context)!.helloWorld
+                            : titleTxt,
                         textAlign: TextAlign.left,
                         style: TextStyle(
                           fontFamily: FitnessAppTheme.fontName,
