@@ -61,7 +61,9 @@ class AuthProvider extends ChangeNotifier {
               context,
               MaterialPageRoute(
                 builder: (context) => OtpScreen(
-                    verificationId: verificationId, mobile: phoneNumber),
+                  verificationId: verificationId,
+                  mobile: phoneNumber,
+                ),
               ),
             );
           },

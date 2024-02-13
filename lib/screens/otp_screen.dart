@@ -209,47 +209,54 @@ class _OtpScreenState extends State<OtpScreen> {
 
   void verifyOtp(BuildContext context, String userOtp) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
-    ap.verifyOtp(
-      context: context,
-      verificationId: widget.verificationId,
-      userOtp: userOtp,
-      onSuccess: () {
-        ap.checkExistingUser().then(
-          (value) async {
-            if (value == true) {
-              // user exists in our app
-              await _getLocationData();
-              // print('MOBILE - ${widget.mobile}');
-              // await _updateData(widget.mobile, latData.toString(), longData.toString()); //WORKING
-              ap.getDataFromFirestore().then(
-                    (value) => ap.saveUserDataToSP().then(
-                          (value) => ap.setSignIn().then(
-                                (value) => Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      // builder: (context) => FitnessAppHomeScreen(mobile: widget.mobile ?? '+9100000000'),
-                                      // builder: (context) => FitnessAppHomeScreen(mobile: '+919689061841'),
-                                      builder: (context) =>
-                                          FitnessAppHomeScreen(),
+    ap.isLoading == true
+        ? const Center(
+            child: CircularProgressIndicator(
+              color: Colors.purple,
+            ),
+          )
+        : ap.verifyOtp(
+            context: context,
+            verificationId: widget.verificationId,
+            userOtp: userOtp,
+            onSuccess: () {
+              ap.checkExistingUser().then(
+                (value) async {
+                  if (value == true) {
+                    // user exists in our app
+                    await _getLocationData();
+                    // print('MOBILE - ${widget.mobile}');
+                    // await _updateData(widget.mobile, latData.toString(), longData.toString()); //WORKING
+                    ap.getDataFromFirestore().then(
+                          (value) => ap.saveUserDataToSP().then(
+                                (value) => ap.setSignIn().then(
+                                      (value) => Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                            // builder: (context) => FitnessAppHomeScreen(mobile: widget.mobile ?? '+9100000000'),
+                                            // builder: (context) => FitnessAppHomeScreen(mobile: '+919689061841'),
+                                            builder: (context) =>
+                                                const FitnessAppHomeScreen(),
+                                          ),
+                                          (route) => false),
                                     ),
-                                    (route) => false),
                               ),
+                        );
+                  } else {
+                    //New user
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              UserInfoScreen(mobile: widget.mobile),
+                          // builder: (context) => UserInfoScreen(mobile: '9689061841'),
                         ),
-                  );
-            } else {
-              //New user
-              Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserInfoScreen(mobile: widget.mobile),
-                    // builder: (context) => UserInfoScreen(mobile: '9689061841'),
-                  ),
-                  (route) => false);
-            }
-          },
-        );
-      },
-    );
+                        (route) => false);
+                  }
+                },
+              );
+            },
+          );
   }
 
   //MongoDB functions
@@ -257,7 +264,7 @@ class _OtpScreenState extends State<OtpScreen> {
   Future<void> _updateData(String mobileNo, String lat, String long) async {
     final updateData = Model(mobile: mobileNo, latitude: lat, longitude: long);
     await MongoDatabase.update(updateData);
-        // .whenComplete(() => Navigator.pop(context));
+    // .whenComplete(() => Navigator.pop(context));
   }
 
   Future<void> _insertData(String mobileNo, String lat, String long) async {

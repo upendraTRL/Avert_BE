@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:test_1/mongodb/model_firebase.dart';
 import 'package:test_1/mongodb/mongodb.dart';
@@ -26,6 +28,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
 
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+
   @override
   void dispose() {
     // Disposing the controllers when we dont need them
@@ -38,6 +43,69 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   void selectImage() async {
     image = await pickImage(context);
     setState(() {});
+  }
+
+  //Location logic
+  Position? _currentLocation;
+  late bool servicePermission = false;
+  late LocationPermission permission;
+
+  String _currentAddress = "";
+  String latData = '111';
+  String longData = '222';
+  String addressData = 'India';
+  String isLoc = 'false';
+  // String translatedAdd = 'null';
+
+  Future<Position> _getCurrentLocation() async {
+    servicePermission = await Geolocator.isLocationServiceEnabled();
+    if (!servicePermission) {
+      print('Service Disabled');
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  //Geocoding to get address
+  _getAddressFromCoordinates() async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          _currentLocation!.latitude, _currentLocation!.longitude);
+
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress =
+            "${place.subLocality}, ${place.locality}, ${place.country}";
+        addressData = _currentAddress;
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  _getLocationData() async {
+    // print('Location Received');
+    _currentLocation = await _getCurrentLocation();
+    await _getAddressFromCoordinates();
+    // print('${_currentLocation}');
+    latData = _currentLocation!.latitude.toString();
+    longData = _currentLocation!.longitude.toString();
+    isLoc = 'true';
+    // await _checkLocOn(isLoc);
+
+    if (isLoc == 'true') {
+      _isLoading = true;
+
+      await _insertData(widget.mobile, latData.toString(), longData.toString());
+
+      _isLoading = false;
+
+      // await _updateData(
+      //     widget.mobile, latData.toString(), longData.toString()); //WORKING
+    }
   }
 
   @override
@@ -228,7 +296,14 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         userModel: userModel,
         profilePic: image!,
         onSuccess: () async {
-          await _insertData(widget.mobile, '111', '222');
+          // await _insertData(widget.mobile, '111', '222');
+          ap.isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.purple,
+                  ),
+                )
+              : await _getLocationData();
 
           ap.saveUserDataToSP().then(
                 (value) => ap.setSignIn().then(
@@ -238,7 +313,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                             builder: (context) =>
                                 // FitnessAppHomeScreen(mobile: widget.mobile),
                                 FitnessAppHomeScreen(),
-                                // FitnessAppHomeScreen(mobile: '+919689061841'),
+                            // FitnessAppHomeScreen(mobile: '+919689061841'),
                             // builder: (context) => MyDiaryScreen(
                             //     // mobile: widget.mobile
                             //     ),
@@ -254,6 +329,13 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   }
 
   //MongoDB Functions
+
+  Future<void> _updateData(String mobileNo, String lat, String long) async {
+    final updateData = Model(mobile: mobileNo, latitude: lat, longitude: long);
+    await MongoDatabase.update(updateData);
+    // .whenComplete(() => Navigator.pop(context));
+  }
+
   Future<void> _insertData(String mobileNo, String lat, String long) async {
     // var _id = M.ObjectId(); //THIS WILL USE FOR UNIQUE ID
     final data = Model(mobile: mobileNo, latitude: lat, longitude: long);
