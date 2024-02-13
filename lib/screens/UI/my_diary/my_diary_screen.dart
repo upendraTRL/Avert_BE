@@ -33,9 +33,11 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
   @override
   void initState() {
     topBarAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-        CurvedAnimation(
-            parent: widget.animationController!,
-            curve: Interval(0, 0.5, curve: Curves.fastOutSlowIn)));
+      CurvedAnimation(
+        parent: widget.animationController!,
+        curve: const Interval(0, 0.5, curve: Curves.fastOutSlowIn),
+      ),
+    );
     addAllListData();
 
     scrollController.addListener(() {
@@ -79,10 +81,16 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
     // );
     listViews.add(
       MediterranesnDietView(
-        animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+        animation: Tween<double>(begin: 0.0, end: 1.0).animate(
+          CurvedAnimation(
             parent: widget.animationController!,
-            curve:
-                Interval((1 / count) * 1, 1.0, curve: Curves.fastOutSlowIn))),
+            curve: const Interval(
+              (1 / count) * 1,
+              1.0,
+              curve: Curves.fastOutSlowIn,
+            ),
+          ),
+        ),
         animationController: widget.animationController!,
       ),
     );
@@ -153,10 +161,15 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
     listViews.add(
       AreaListView(
         mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
-            CurvedAnimation(
-                parent: widget.animationController!,
-                curve: Interval((1 / count) * 5, 1.0,
-                    curve: Curves.fastOutSlowIn))),
+          CurvedAnimation(
+            parent: widget.animationController!,
+            curve: const Interval(
+              (1 / count) * 5,
+              1.0,
+              curve: Curves.fastOutSlowIn,
+            ),
+          ),
+        ),
         mainScreenAnimationController: widget.animationController!,
       ),
     );
@@ -210,7 +223,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
 
   //Translation logic
   String dropdownValue = 'English';
-  String _currentAddress = "";
+  final String _currentAddress = "";
   String latData = '111';
   String longData = '222';
   String addressData = 'India';
@@ -408,16 +421,17 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
                                   // ),
                                   DropdownButton<String>(
                                     value: dropdownValue,
-                                    icon: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        child: const Icon(Icons.translate)),
+                                    icon: const Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      child: Icon(Icons.translate),
+                                    ),
                                     onChanged: (String? newValue) {
                                       setState(() {
                                         dropdownValue = newValue!;
                                       });
                                     },
-                                    items: [
+                                    items: const [
                                       DropdownMenuItem<String>(
                                         value: 'English',
                                         child: Text('English'),
@@ -486,7 +500,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
 }
 
 Widget buildImage(String urlImage, int index) => Container(
-      margin: EdgeInsets.symmetric(horizontal: 6, vertical: 20),
+      margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 20),
       // padding: EdgeInsets.all(30),
       color: Colors.grey,
       child: Image.network(
