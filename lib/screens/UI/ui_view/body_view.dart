@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class TitleView extends StatefulWidget {
-  const TitleView({
+class BodyView extends StatefulWidget {
+  const BodyView({
     super.key,
     this.titleTxt = "",
     this.subTxt = "",
@@ -20,10 +20,10 @@ class TitleView extends StatefulWidget {
   final Animation<double>? animation;
 
   @override
-  State<TitleView> createState() => _TitleViewState();
+  State<BodyView> createState() => _BodyViewState();
 }
 
-class _TitleViewState extends State<TitleView> {
+class _BodyViewState extends State<BodyView> {
   late String titleValue = 'Updates';
 
   @override
@@ -32,12 +32,8 @@ class _TitleViewState extends State<TitleView> {
       titleValue = context.formatString(LocaleData.updates, ['']);
     } else if (widget.titleTxt == 'Features') {
       titleValue = context.formatString(LocaleData.features, ['']);
-    } else if (widget.titleTxt == 'prevTitle') {
-      titleValue = context.formatString(LocaleData.prevTitle, ['']);
     } else if (widget.titleTxt == 'prevBody') {
       titleValue = context.formatString(LocaleData.prevBody, ['']);
-    } else if (widget.titleTxt == 'precTitle') {
-      titleValue = context.formatString(LocaleData.precTitle, ['']);
     } else if (widget.titleTxt == 'precBody') {
       titleValue = context.formatString(LocaleData.precBody, ['']);
     }
@@ -52,7 +48,7 @@ class _TitleViewState extends State<TitleView> {
             transform: Matrix4.translationValues(
                 0.0, 30 * (1.0 - widget.animation!.value), 0.0),
             child: Container(
-              margin: EdgeInsets.only(top: 15),
+              margin: EdgeInsets.symmetric(vertical: 10),
               child: Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
                 child: Row(
@@ -65,8 +61,8 @@ class _TitleViewState extends State<TitleView> {
                         textAlign: TextAlign.justify,
                         style: const TextStyle(
                           fontFamily: FitnessAppTheme.fontName,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 16,
                           letterSpacing: 0.5,
                           color: FitnessAppTheme.lightText,
                         ),

@@ -173,7 +173,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                 setState(() {
                   tabBody =
                       // TrainingScreen(animationController: animationController);
-                      PrevAndPrec();
+                      PrevAndPrec(animationController: animationController);
                 });
               });
             }

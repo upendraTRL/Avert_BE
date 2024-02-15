@@ -82,19 +82,6 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
 
   void addAllListData() {
     const int count = 9;
-
-    // listViews.add(
-    //   TitleView(
-    //     titleTxt: 'Area',
-    //     subTxt: 'Details',
-    //     animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-    //         parent: widget.animationController!,
-    //         curve:
-    //             Interval((1 / count) * 0, 1.0, curve: Curves.fastOutSlowIn))),
-    //     animationController: widget.animationController!,
-    //   ),
-    // );
-    print('UPDATEDEDEDDDDDD');
     listViews.add(
       MediterranesnDietView(
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(

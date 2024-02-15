@@ -8,18 +8,29 @@ const List<MapLocale> LOCALES = [
 
 mixin LocaleData {
   static const String title = 'title';
-  static const String prevAndPrecTitle = 'Preventions and Precations';
-  static const String prevTitle = 'Preventions';
-  static const String precTitle = 'Precations';
+
   static const String updates = 'updates';
   static const String features = 'features';
+
+  static const String infoAddress = 'Address';
+  static const String infoCalamity = 'Calamity';
+
+  static const String prevAndPrecTitle = 'Preventions and Precations';
+  static const String prevTitle = 'Preventions';
   static const String prevBody = 'prev body';
+  static const String precTitle = 'Precations';
   static const String precBody = 'prec body';
 
   static const Map<String, dynamic> EN = {
     title: 'Localization',
     updates: 'Updates',
     features: 'Features',
+
+    //Info
+    infoAddress: 'Shivaji Nagar, Pune',
+    infoCalamity: 'Caution: Earthquake',
+
+    //Prev & Prec
     prevAndPrecTitle: 'Preventions and \nPrecations',
     prevTitle: 'Preventions',
     precTitle: 'Precations',
@@ -40,6 +51,12 @@ mixin LocaleData {
     title: 'हिंदी',
     updates: 'जानकारी',
     features: 'विशेषताएँ',
+
+    //Info
+    infoAddress: 'शिवाजी नगर, पुणे',
+    infoCalamity: 'सावधानी: भूकंप',
+
+    //Prev & Prec
     prevAndPrecTitle: 'रोकथाम और सावधानियां',
     prevTitle: 'रोकथाम',
     precTitle: 'सावधानियां',
