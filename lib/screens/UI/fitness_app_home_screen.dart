@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
@@ -13,10 +15,10 @@ import 'fitness_app_theme.dart';
 import 'my_diary/my_diary_screen.dart';
 
 class FitnessAppHomeScreen extends StatefulWidget {
-  const FitnessAppHomeScreen({super.key});
-  // const FitnessAppHomeScreen({super.key, required this.mobile});
+  // const FitnessAppHomeScreen({super.key, this.mobile});
+  const FitnessAppHomeScreen({super.key, required this.mobile});
 
-  // final String mobile;
+  final String mobile;
 
   @override
   _FitnessAppHomeScreenState createState() => _FitnessAppHomeScreenState();
@@ -27,6 +29,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
   AnimationController? animationController;
 
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
+  bool isAppend = false;
 
   Widget tabBody = Container(
     color: FitnessAppTheme.background,
@@ -35,7 +38,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
   @override
   void initState() {
     // print('THHHHHH - ${widget.mobile}');
-    // _getLocationData();
+    _getLocationData();
 
     // _updateData(
     //     "+911234567890", latData.toString(), longData.toString()); //WORKING
@@ -52,6 +55,19 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
       animationController: animationController,
     );
     super.initState();
+    int i = 0;
+    print('User - ${widget.mobile}');
+    Timer.periodic(Duration(seconds: 11), (timer) async {
+      //code to run on every 5 seconds
+      print('object - ${i++}');
+      if (isAppend == true) {
+        await _updateData(
+          widget.mobile,
+          latData.toString(),
+          longData.toString(),
+        );
+      }
+    });
   }
 
   //Location logic
@@ -103,6 +119,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     longData = _currentLocation!.longitude.toString();
     // isLoc = true;
     // await _checkLocOn(isLoc);
+    isAppend = true;
   }
 
   @override
@@ -184,10 +201,8 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
   }
 
   //MongoDB functions
-
   Future<void> _updateData(String mobileNo, String lat, String long) async {
     final updateData = Model(mobile: mobileNo, latitude: lat, longitude: long);
-    await MongoDatabase.update(updateData)
-        .whenComplete(() => Navigator.pop(context));
+    await MongoDatabase.update(updateData);
   }
 }

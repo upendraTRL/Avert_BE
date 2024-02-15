@@ -236,7 +236,9 @@ class _OtpScreenState extends State<OtpScreen> {
                                             // builder: (context) => FitnessAppHomeScreen(mobile: widget.mobile ?? '+9100000000'),
                                             // builder: (context) => FitnessAppHomeScreen(mobile: '+919689061841'),
                                             builder: (context) =>
-                                                const FitnessAppHomeScreen(),
+                                                FitnessAppHomeScreen(
+                                              mobile: widget.mobile,
+                                            ),
                                           ),
                                           (route) => false),
                                     ),

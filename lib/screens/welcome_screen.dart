@@ -63,6 +63,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => FitnessAppHomeScreen(
+                                    mobile: ap.userModel.phoneNumber,
                                     // mobile: ap.userModel.phoneNumber ?? '+910000000000',
                                     // mobile: '+919689061841',
                                   ),

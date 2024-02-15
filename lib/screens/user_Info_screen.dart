@@ -312,7 +312,9 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                           MaterialPageRoute(
                             builder: (context) =>
                                 // FitnessAppHomeScreen(mobile: widget.mobile),
-                                FitnessAppHomeScreen(),
+                                FitnessAppHomeScreen(
+                              mobile: widget.mobile,
+                            ),
                             // FitnessAppHomeScreen(mobile: '+919689061841'),
                             // builder: (context) => MyDiaryScreen(
                             //     // mobile: widget.mobile
