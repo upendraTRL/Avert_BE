@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:test_1/controller/language_change_controller.dart';
 import 'package:test_1/mongodb/mongodb.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/UI/my_diary/my_diary_screen.dart';
@@ -25,25 +26,31 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => LanguageChangeController())
       ],
-      child: const MaterialApp(
-        locale: Locale('fr'),
-        supportedLocales: [
-          Locale('en'),
-          Locale('fr'),
-        ],
-        localizationsDelegates: [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        debugShowCheckedModeBanner: false,
-        home: WelcomeScreen(),
-        // home: MyDiaryScreen(mobile: '+919689061841'),
-        // home: MyDiaryScreen(),
-        // title: "Authentication",
-        title: 'Authentication',
+      child: Consumer<LanguageChangeController>(
+        builder: (context, provider, child) {
+          return MaterialApp(
+            // locale: Locale('fr'),
+            locale: provider.appLocale,
+            supportedLocales: [
+              Locale('en'),
+              Locale('fr'),
+            ],
+            localizationsDelegates: [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            debugShowCheckedModeBanner: false,
+            home: WelcomeScreen(),
+            // home: MyDiaryScreen(mobile: '+919689061841'),
+            // home: MyDiaryScreen(),
+            title: "Authentication",
+            // title: AppLocalizations.of(context)!.helloWorld,
+          );
+        },
       ),
     );
   }

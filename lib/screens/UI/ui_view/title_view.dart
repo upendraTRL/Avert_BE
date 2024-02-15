@@ -3,30 +3,38 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class TitleView extends StatelessWidget {
+class TitleView extends StatefulWidget {
+  const TitleView({
+    super.key,
+    this.titleTxt = "",
+    this.subTxt = "",
+    this.animationController,
+    this.animation,
+  });
+
   final String titleTxt;
   final String subTxt;
   final AnimationController? animationController;
   final Animation<double>? animation;
 
-  const TitleView(
-      {Key? key,
-      this.titleTxt = "",
-      this.subTxt = "",
-      this.animationController,
-      this.animation})
-      : super(key: key);
+  @override
+  State<TitleView> createState() => _TitleViewState();
+}
+
+class _TitleViewState extends State<TitleView> {
+  String langTest = 'Updates';
 
   @override
   Widget build(BuildContext context) {
+    print('ASKHFGKASUGF');
     return AnimatedBuilder(
-      animation: animationController!,
+      animation: widget.animationController!,
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation!,
-          child: new Transform(
-            transform: new Matrix4.translationValues(
-                0.0, 30 * (1.0 - animation!.value), 0.0),
+          opacity: widget.animation!,
+          child: Transform(
+            transform: Matrix4.translationValues(
+                0.0, 30 * (1.0 - widget.animation!.value), 0.0),
             child: Container(
               child: Padding(
                 padding: const EdgeInsets.only(left: 24, right: 24),
@@ -34,11 +42,10 @@ class TitleView extends StatelessWidget {
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        (titleTxt == 'Updates')
-                            ? AppLocalizations.of(context)!.helloWorld
-                            : titleTxt,
+                        // widget.titleTxt,
+                        AppLocalizations.of(context)!.helloWorld,
                         textAlign: TextAlign.left,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: FitnessAppTheme.fontName,
                           fontWeight: FontWeight.w500,
                           fontSize: 18,
@@ -56,7 +63,7 @@ class TitleView extends StatelessWidget {
                         child: Row(
                           children: <Widget>[
                             Text(
-                              subTxt,
+                              widget.subTxt,
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 fontFamily: FitnessAppTheme.fontName,
