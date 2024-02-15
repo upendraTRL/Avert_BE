@@ -1,3 +1,5 @@
+import 'package:flutter_localization/flutter_localization.dart';
+import 'package:test_1/localization/locales.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -22,10 +24,16 @@ class TitleView extends StatefulWidget {
 }
 
 class _TitleViewState extends State<TitleView> {
-  String langTest = 'Updates';
+  late String titleValue = 'Updates';
 
   @override
   Widget build(BuildContext context) {
+    if (widget.titleTxt == 'Updates') {
+      titleValue = context.formatString(LocaleData.updates, ['User']);
+    } else if (widget.titleTxt == 'Features') {
+      titleValue = context.formatString(LocaleData.features, ['User']);
+    }
+
     print('ASKHFGKASUGF');
     return AnimatedBuilder(
       animation: widget.animationController!,
@@ -42,8 +50,9 @@ class _TitleViewState extends State<TitleView> {
                   children: <Widget>[
                     Expanded(
                       child: Text(
+                        titleValue,
                         // widget.titleTxt,
-                        AppLocalizations.of(context)!.helloWorld,
+                        // AppLocalizations.of(context)!.helloWorld,
                         textAlign: TextAlign.left,
                         style: const TextStyle(
                           fontFamily: FitnessAppTheme.fontName,

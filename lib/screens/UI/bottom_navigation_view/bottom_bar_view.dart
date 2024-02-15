@@ -255,7 +255,7 @@ class _BottomBarViewState extends State<BottomBarView>
                               'S.O.S',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),

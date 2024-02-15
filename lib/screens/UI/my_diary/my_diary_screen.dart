@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:provider/provider.dart';
 import 'package:test_1/controller/language_change_controller.dart';
+import 'package:test_1/localization/locales.dart';
 import 'package:test_1/screens/UI/ui_view/area_list_view.dart';
 import 'package:test_1/screens/UI/ui_view/mediterranean_diet_view.dart';
 import 'package:test_1/screens/UI/ui_view/title_view.dart';
@@ -26,8 +28,6 @@ class MyDiaryScreen extends StatefulWidget {
 
 class _MyDiaryScreenState extends State<MyDiaryScreen>
     with TickerProviderStateMixin {
-  String testString = 'Hello World';
-
   final urlImages = [
     'https://img.freepik.com/free-photo/3d-rendering-cartoon-house_23-2150165654.jpg?w=826&t=st=1703674332~exp=1703674932~hmac=730768e8a483860660c6c3268b1209beba793a0a708350616a17c662800a9bf2',
     'https://img.freepik.com/free-vector/firefighter-extinguishing-flame-character-rescuer-dangerous-job-fire-protection-fire-prevention-technologies-fire-protection-services-concept-pinkish-coral-bluevector-isolated-illustration_335657-1504.jpg?w=1060&t=st=1703673947~exp=1703674547~hmac=ccdf69644a6d793a66283804bb8703ae4c1891faae72913ba20dfe0c03e8ff4a',
@@ -36,6 +36,8 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
   ];
   Animation<double>? topBarAnimation;
 
+  late FlutterLocalization _flutterLocalization;
+  late String _currentLocale;
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
@@ -48,6 +50,9 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         curve: const Interval(0, 0.5, curve: Curves.fastOutSlowIn),
       ),
     );
+
+    _flutterLocalization = FlutterLocalization.instance;
+    _currentLocale = _flutterLocalization.currentLocale!.languageCode;
     addAllListData();
 
     scrollController.addListener(() {
@@ -107,6 +112,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
     );
     listViews.add(
       TitleView(
+        // titleTxt: context.formatString(LocaleData.updates, ['User']),
         titleTxt: 'Updates',
         // titleTxt: (updateTitle),
         // subTxt: 'Customize',
@@ -154,6 +160,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
 
     listViews.add(
       TitleView(
+        // titleTxt: context.formatString(LocaleData.features, ['User']),
         titleTxt: 'Features',
         // subTxt: 'Today',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -299,15 +306,6 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
     // controller.dispose();
   }
 
-  void langTrans() {
-    setState(() {
-      print(';;;;;;;;;;;;;;;;;;');
-      testString = AppLocalizations.of(context)!.helloWorld;
-      addAllListData();
-    });
-    print('TEST STRING - ${AppLocalizations.of(context)!.helloWorld}');
-  }
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -316,7 +314,6 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         backgroundColor: Colors.transparent,
         body: Stack(
           children: <Widget>[
-            Text(testString),
             getMainListViewUI(),
             getAppBarUI(),
             SizedBox(
@@ -326,6 +323,23 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         ),
       ),
     );
+  }
+
+  void _setLocale(String? value) {
+    if (value == null) return;
+    if (value == 'en') {
+      _flutterLocalization.translate('en');
+    } else if (value == 'de') {
+      _flutterLocalization.translate('de');
+    } else if (value == 'hi') {
+      _flutterLocalization.translate('hi');
+    } else {
+      return;
+    }
+
+    setState(() {
+      _currentLocale = value;
+    });
   }
 
   Widget getMainListViewUI() {
@@ -441,49 +455,46 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
                                   //     size: 18,
                                   //   ),
                                   // ),
-                                  Consumer<LanguageChangeController>(
-                                    builder: (context, provider, child) {
-                                      return DropdownButton<String>(
-                                        value: dropdownValue,
-                                        icon: const Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: Icon(Icons.translate),
-                                        ),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            dropdownValue = newValue!;
-                                            provider.changeLanguage(
-                                                Locale(dropdownValue));
-                                          });
-                                          langTrans();
-                                          // addAllListData();
-                                          print('Code - $dropdownValue');
-                                        },
-                                        items: const [
-                                          DropdownMenuItem<String>(
-                                            value: 'English',
-                                            child: Text('English'),
-                                          ),
-                                          DropdownMenuItem<String>(
-                                            value: 'hi',
-                                            child: Text('हिंदी'),
-                                          ),
-                                          DropdownMenuItem<String>(
-                                            value: 'fr',
-                                            child: Text('मराठी'),
-                                          ),
-                                          DropdownMenuItem<String>(
-                                            value: 'Gujarati',
-                                            child: Text('ગુજરાતી'),
-                                          ),
-                                          DropdownMenuItem<String>(
-                                            value: 'Kannada',
-                                            child: Text('ಕನ್ನಡ'),
-                                          ),
-                                        ],
-                                      );
+                                  DropdownButton(
+                                    value: dropdownValue,
+                                    icon: const Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 10),
+                                      child: Icon(Icons.translate),
+                                    ),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        dropdownValue = newValue!;
+                                      });
+                                      _currentLocale = dropdownValue;
+                                      _setLocale(dropdownValue);
+
+                                      // langTrans();
+                                      // addAllListData();
+                                      print('Code - $dropdownValue');
                                     },
+                                    items: const [
+                                      DropdownMenuItem<String>(
+                                        value: 'English',
+                                        child: Text('English'),
+                                      ),
+                                      DropdownMenuItem<String>(
+                                        value: 'hi',
+                                        child: Text('हिंदी'),
+                                      ),
+                                      DropdownMenuItem<String>(
+                                        value: 'de',
+                                        child: Text('मराठी'),
+                                      ),
+                                      DropdownMenuItem<String>(
+                                        value: 'en',
+                                        child: Text('ગુજરાતી'),
+                                      ),
+                                      DropdownMenuItem<String>(
+                                        value: 'Kannada',
+                                        child: Text('ಕನ್ನಡ'),
+                                      ),
+                                    ],
                                   ),
                                   // Text(
                                   //   '15 May',
