@@ -5,6 +5,7 @@ import 'package:test_1/mongodb/mongodb.dart';
 import 'package:test_1/mongodb/user_model.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/UI/models/tabIcon_data.dart';
+import 'package:test_1/screens/UI/my_diary/prev_and_prec.dart';
 import 'package:test_1/screens/UI/training/training_screen.dart';
 import 'package:flutter/material.dart';
 import 'bottom_navigation_view/bottom_bar_view.dart';
@@ -171,7 +172,8 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                 }
                 setState(() {
                   tabBody =
-                      TrainingScreen(animationController: animationController);
+                      // TrainingScreen(animationController: animationController);
+                      PrevAndPrec();
                 });
               });
             }
