@@ -17,11 +17,11 @@ class MyDiaryScreen extends StatefulWidget {
   const MyDiaryScreen({
     Key? key,
     this.animationController,
-    required this.userAddress,
+    // required this.userAddress,
   }) : super(key: key);
 
   final AnimationController? animationController;
-  final String userAddress;
+  // final String userAddress;
   @override
   _MyDiaryScreenState createState() => _MyDiaryScreenState();
 }
@@ -82,22 +82,22 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
     super.initState();
 
     //Get User Address
-    Timer.periodic(Duration(seconds: 6), (timer) {
-      if (widget.userAddress != '') {
-        setState(() {
-          addAllListData();
-          log('Diary Address - ${widget.userAddress}');
-        });
-        timer.cancel();
-      }
-    });
+    // Timer.periodic(Duration(seconds: 6), (timer) {
+    //   if (widget.userAddress != '') {
+    //     setState(() {
+    //       addAllListData();
+    //       log('Diary Address - ${widget.userAddress}');
+    //     });
+    //     timer.cancel();
+    //   }
+    // });
   }
 
   void addAllListData() {
     const int count = 9;
     listViews.add(
       MediterranesnDietView(
-        userAddress: widget.userAddress,
+        // userAddress: widget.userAddress,
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(
             parent: widget.animationController!,
@@ -246,12 +246,12 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
     }
   }
 
-  // @override
-  // void dispose() {
-  //   // TODO: implement dispose
-  //   super.dispose();
-  //   // controller.dispose();
-  // }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    // controller.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_1/mongodb/mongodb.dart';
 import 'package:test_1/mongodb/user_model.dart';
 import 'package:test_1/screens/UI/models/tabIcon_data.dart';
@@ -25,6 +26,7 @@ class FitnessAppHomeScreen extends StatefulWidget {
 class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     with TickerProviderStateMixin {
   AnimationController? animationController;
+  bool isLoading = true;
 
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
   bool isAppend = false;
@@ -49,9 +51,11 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
     tabBody = MyDiaryScreen(
       animationController: animationController,
-      userAddress: addressData,
+      // userAddress: addressData,
     );
+
     super.initState();
+
     int i = 0;
     print('User - ${widget.mobile}');
     // Timer.periodic(Duration(seconds: 11), (timer) async {
@@ -69,18 +73,23 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     //Get Address Timer
     Timer.periodic(Duration(seconds: 6), (timer) {
       if (addressData != '') {
+        _storeUserAddress();
+        isLoading = false;
         setState(() {
-          checkTimer = false;
           log('Home Address - $addressData');
-          tabBody = MyDiaryScreen(
-            animationController: animationController,
-            userAddress: addressData,
-          );
-          bottomBar();
         });
         timer.cancel();
       }
     });
+  }
+
+  //User address shared pref
+  Future<void> _storeUserAddress() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    log('Value setting - $addressData');
+
+    await prefs.setString('userAddress', addressData);
   }
 
   //Location logic
@@ -134,11 +143,11 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     isAppend = true;
   }
 
-  // @override
-  // void dispose() {
-  //   animationController?.dispose();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    animationController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -148,28 +157,34 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
       color: FitnessAppTheme.background,
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: FutureBuilder<bool>(
-          future: getData(),
-          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox();
-            } else {
-              return Stack(
-                children: <Widget>[
-                  checkTimer == true
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            color: Colors.purple,
-                          ),
-                        )
-                      : Center(child: Text(addressData)),
-                  // tabBody,
-                  // bottomBar(),
-                ],
-              );
-            }
-          },
-        ),
+        body: isLoading == true
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: Colors.purple,
+                ),
+              )
+            : FutureBuilder<bool>(
+                future: getData(),
+                builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                  if (!snapshot.hasData) {
+                    return const SizedBox();
+                  } else {
+                    return Stack(
+                      children: <Widget>[
+                        // checkTimer == true
+                        //     ? const Center(
+                        //         child: CircularProgressIndicator(
+                        //           color: Colors.purple,
+                        //         ),
+                        //       )
+                        //     : Center(child: Text(addressData)),
+                        tabBody,
+                        bottomBar(),
+                      ],
+                    );
+                  }
+                },
+              ),
       ),
     );
   }
@@ -207,7 +222,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                   //       );
                   MyDiaryScreen(
                     animationController: animationController,
-                    userAddress: addressData,
+                    // userAddress: addressData,
                   );
                 });
               });

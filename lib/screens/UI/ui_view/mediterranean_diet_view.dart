@@ -6,6 +6,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +19,12 @@ class MediterranesnDietView extends StatefulWidget {
     Key? key,
     this.animationController,
     this.animation,
-    this.userAddress,
+    // this.userAddress,
   }) : super(key: key);
 
   final AnimationController? animationController;
   final Animation<double>? animation;
-  final String? userAddress;
+  // final String? userAddress;
 
   @override
   State<MediterranesnDietView> createState() => _MediterranesnDietViewState();
@@ -31,23 +32,29 @@ class MediterranesnDietView extends StatefulWidget {
 
 class _MediterranesnDietViewState extends State<MediterranesnDietView> {
   bool isAddressLoading = true;
+  String userAddress = 'India';
 
   @override
   void initState() {
     super.initState();
 
-    Timer.periodic(Duration(seconds: 10), (timer) {
-      if (widget.userAddress != '') {
-        // if (mounted) {
-        setState(() {
-          log('Mediterranean Address - ${widget.userAddress}');
-          isAddressLoading = false;
-        });
-        // }
-
-        timer.cancel();
-      }
+    Timer(Duration(seconds: 5), () {
+      _getIntFromSharedPref();
+      setState(() {});
     });
+
+    // Timer.periodic(Duration(seconds: 10), (timer) {
+    //   if (widget.userAddress != '') {
+    //     // if (mounted) {
+    //     setState(() {
+    //       log('Mediterranean Address - ${widget.userAddress}');
+    //       isAddressLoading = false;
+    //     });
+    //     // }
+
+    //     timer.cancel();
+    //   }
+    // });
 
     // int i = 0;
 
@@ -98,11 +105,22 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
   //   setState(() {});
   // }
 
-  // @override
-  // void dispose() {
-  //   // TODO: implement dispose
-  //   super.dispose();
-  // }
+  //Returning stored value
+  Future<String> _getIntFromSharedPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    userAddress = prefs.getString('userAddress')!;
+    log('Getting value - $userAddress');
+
+    // if (startupNumber == null) return 0;
+
+    return userAddress;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,10 +215,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                                   left: 4, bottom: 2),
                                               child: Text(
                                                 // widget.userAddress!,
-                                                // addressData,
-                                                (isAddressLoading == true)
-                                                    ? 'ABC'
-                                                    : 'Shivaji Nagar, Pune',
+                                                'Shivaji Nagar, Pune',
                                                 textAlign: TextAlign.center,
                                                 style: const TextStyle(
                                                     fontFamily: FitnessAppTheme
