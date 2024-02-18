@@ -2,11 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_1/mongodb/mongodb.dart';
-import 'package:test_1/mongodb/user_model.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/widgets/custome_widgets.dart';
-import 'package:mongo_dart/mongo_dart.dart' as M;
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

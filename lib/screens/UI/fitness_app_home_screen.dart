@@ -1,15 +1,13 @@
 import 'dart:async';
+import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:provider/provider.dart';
 import 'package:test_1/mongodb/mongodb.dart';
 import 'package:test_1/mongodb/user_model.dart';
-import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/UI/models/tabIcon_data.dart';
 import 'package:test_1/screens/UI/my_diary/prev_and_prec.dart';
-import 'package:test_1/screens/UI/training/training_screen.dart';
-import 'package:flutter/material.dart';
 import 'bottom_navigation_view/bottom_bar_view.dart';
 import 'fitness_app_theme.dart';
 import 'my_diary/my_diary_screen.dart';
@@ -30,6 +28,8 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
   List<TabIconData> tabIconsList = TabIconData.tabIconsList;
   bool isAppend = false;
+  String addressData = '';
+  bool checkTimer = true;
 
   Widget tabBody = Container(
     color: FitnessAppTheme.background,
@@ -37,11 +37,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
   @override
   void initState() {
-    // print('THHHHHH - ${widget.mobile}');
     _getLocationData();
-
-    // _updateData(
-    //     "+911234567890", latData.toString(), longData.toString()); //WORKING
 
     tabIconsList.forEach((TabIconData tab) {
       tab.isSelected = false;
@@ -50,22 +46,39 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
     animationController = AnimationController(
         duration: const Duration(milliseconds: 600), vsync: this);
+
     tabBody = MyDiaryScreen(
-      // mobile: widget.mobile,
       animationController: animationController,
+      userAddress: addressData,
     );
     super.initState();
     int i = 0;
     print('User - ${widget.mobile}');
-    Timer.periodic(Duration(seconds: 11), (timer) async {
-      //code to run on every 5 seconds
-      print('object - ${i++}');
-      if (isAppend == true) {
-        await _updateData(
-          widget.mobile,
-          latData.toString(),
-          longData.toString(),
-        );
+    // Timer.periodic(Duration(seconds: 11), (timer) async {
+    //   //code to run on every 5 seconds
+    //   print('object - ${i++}');
+    //   if (isAppend == true) {
+    //     await _updateData(
+    //       widget.mobile,
+    //       latData.toString(),
+    //       longData.toString(),
+    //     );
+    //   }
+    // });
+
+    //Get Address Timer
+    Timer.periodic(Duration(seconds: 6), (timer) {
+      if (addressData != '') {
+        setState(() {
+          checkTimer = false;
+          log('Home Address - $addressData');
+          tabBody = MyDiaryScreen(
+            animationController: animationController,
+            userAddress: addressData,
+          );
+          bottomBar();
+        });
+        timer.cancel();
       }
     });
   }
@@ -78,8 +91,6 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
   String _currentAddress = "";
   String latData = '111';
   String longData = '222';
-  String addressData = 'India';
-  // String translatedAdd = 'null';
 
   Future<Position> _getCurrentLocation() async {
     servicePermission = await Geolocator.isLocationServiceEnabled();
@@ -108,6 +119,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     } catch (e) {
       print(e);
     }
+    // log('User address - $addressData');
   }
 
   _getLocationData() async {
@@ -122,17 +134,16 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     isAppend = true;
   }
 
-  @override
-  void dispose() {
-    animationController?.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   animationController?.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    print('INNN HOMEEE');
+    // print('INNN HOMEEE');
     // final ap = Provider.of<AuthProvider>(context, listen: false);
-    // print('PHONE IN HOME - ${ap.userModel.phoneNumber}');
     return Container(
       color: FitnessAppTheme.background,
       child: Scaffold(
@@ -145,8 +156,15 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
             } else {
               return Stack(
                 children: <Widget>[
-                  tabBody,
-                  bottomBar(),
+                  checkTimer == true
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: Colors.purple,
+                          ),
+                        )
+                      : Center(child: Text(addressData)),
+                  // tabBody,
+                  // bottomBar(),
                 ],
               );
             }
@@ -177,9 +195,20 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                   return;
                 }
                 setState(() {
-                  tabBody = MyDiaryScreen(
-                      // mobile: widget.mobile,
-                      animationController: animationController);
+                  // tabBody = (addressData == '')
+                  //     ? const Center(
+                  //         child: CircularProgressIndicator(
+                  //           color: Colors.purple,
+                  //         ),
+                  //       )
+                  //     : MyDiaryScreen(
+                  //         animationController: animationController,
+                  //         userAddress: addressData,
+                  //       );
+                  MyDiaryScreen(
+                    animationController: animationController,
+                    userAddress: addressData,
+                  );
                 });
               });
             } else if (index == 1 || index == 3) {

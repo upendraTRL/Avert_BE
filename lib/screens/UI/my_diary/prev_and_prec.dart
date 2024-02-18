@@ -1,22 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:translator/translator.dart';
 import 'package:flutter_localization/flutter_localization.dart';
-import 'package:provider/provider.dart';
-import 'package:test_1/controller/language_change_controller.dart';
-import 'package:test_1/localization/locales.dart';
-import 'package:test_1/screens/UI/ui_view/area_list_view.dart';
 import 'package:test_1/screens/UI/ui_view/body_view.dart';
-import 'package:test_1/screens/UI/ui_view/mediterranean_diet_view.dart';
 import 'package:test_1/screens/UI/ui_view/prev_prec_info.dart';
 import 'package:test_1/screens/UI/ui_view/title_view.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
-import 'package:translator/translator.dart';
-
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:test_1/l10n/l10n.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum Language { english, french }
 

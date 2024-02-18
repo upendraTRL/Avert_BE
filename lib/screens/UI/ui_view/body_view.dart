@@ -3,8 +3,6 @@ import 'package:test_1/localization/locales.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 class BodyView extends StatefulWidget {
   const BodyView({
     super.key,

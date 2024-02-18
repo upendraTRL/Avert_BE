@@ -1,27 +1,27 @@
+import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_localization/flutter_localization.dart';
-import 'package:provider/provider.dart';
-import 'package:test_1/controller/language_change_controller.dart';
-import 'package:test_1/localization/locales.dart';
+import 'package:flutter/material.dart';
+import 'package:translator/translator.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:test_1/screens/UI/ui_view/area_list_view.dart';
 import 'package:test_1/screens/UI/ui_view/mediterranean_diet_view.dart';
 import 'package:test_1/screens/UI/ui_view/title_view.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
-import 'package:translator/translator.dart';
-
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:test_1/l10n/l10n.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum Language { english, french }
 
 class MyDiaryScreen extends StatefulWidget {
-  const MyDiaryScreen({Key? key, this.animationController}) : super(key: key);
+  const MyDiaryScreen({
+    Key? key,
+    this.animationController,
+    required this.userAddress,
+  }) : super(key: key);
 
   final AnimationController? animationController;
+  final String userAddress;
   @override
   _MyDiaryScreenState createState() => _MyDiaryScreenState();
 }
@@ -41,6 +41,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
+  bool getAddress = false;
 
   @override
   void initState() {
@@ -77,13 +78,26 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         }
       }
     });
+
     super.initState();
+
+    //Get User Address
+    Timer.periodic(Duration(seconds: 6), (timer) {
+      if (widget.userAddress != '') {
+        setState(() {
+          addAllListData();
+          log('Diary Address - ${widget.userAddress}');
+        });
+        timer.cancel();
+      }
+    });
   }
 
   void addAllListData() {
     const int count = 9;
     listViews.add(
       MediterranesnDietView(
+        userAddress: widget.userAddress,
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(
             parent: widget.animationController!,
@@ -134,22 +148,9 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
       ),
     );
 
-    // listViews.add(
-    //   MealsListView(
-    //     mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
-    //         CurvedAnimation(
-    //             parent: widget.animationController!,
-    //             curve: Interval((1 / count) * 3, 1.0,
-    //                 curve: Curves.fastOutSlowIn))),
-    //     mainScreenAnimationController: widget.animationController,
-    //   ),
-    // );
-
     listViews.add(
       TitleView(
-        // titleTxt: context.formatString(LocaleData.features, ['User']),
         titleTxt: 'Features',
-        // subTxt: 'Today',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(
             parent: widget.animationController!,
@@ -179,47 +180,6 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
         mainScreenAnimationController: widget.animationController!,
       ),
     );
-
-    // listViews.add(
-    //   BodyMeasurementView(
-    //     animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-    //         parent: widget.animationController!,
-    //         curve:
-    //             Interval((1 / count) * 5, 1.0, curve: Curves.fastOutSlowIn))),
-    //     animationController: widget.animationController!,
-    //   ),
-    // );
-    // listViews.add(
-    //   TitleView(
-    //     titleTxt: 'Water',
-    //     subTxt: 'Aqua SmartBottle',
-    //     animation: Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-    //         parent: widget.animationController!,
-    //         curve:
-    //             Interval((1 / count) * 6, 1.0, curve: Curves.fastOutSlowIn))),
-    //     animationController: widget.animationController!,
-    //   ),
-    // );
-
-    // listViews.add(
-    //   WaterView(
-    //     mainScreenAnimation: Tween<double>(begin: 0.0, end: 1.0).animate(
-    //         CurvedAnimation(
-    //             parent: widget.animationController!,
-    //             curve: Interval((1 / count) * 7, 1.0,
-    //                 curve: Curves.fastOutSlowIn))),
-    //     mainScreenAnimationController: widget.animationController!,
-    //   ),
-    // );
-    // listViews.add(
-    //   GlassView(
-    //       animation: Tween<double>(begin: 0.0, end: 1.0).animate(
-    //           CurvedAnimation(
-    //               parent: widget.animationController!,
-    //               curve: Interval((1 / count) * 8, 1.0,
-    //                   curve: Curves.fastOutSlowIn))),
-    //       animationController: widget.animationController!),
-    // );
   }
 
   Future<bool> getData() async {
@@ -232,7 +192,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
   final String _currentAddress = "";
   String latData = '111';
   String longData = '222';
-  String addressData = 'India';
+  // String addressData = 'India';
 
   List<String> languages = [
     'English',
@@ -267,7 +227,7 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
           .then((value) {
         print("Frommmmmmmmmmm 1 - " + from);
         print("Tooooooooooooo 1 - " + to);
-        addressData = value.text;
+        // addressData = value.text;
         isloading = false;
         setState(() {});
         // print("Afterrrrrrrrrrrr - " + addressData);
@@ -286,15 +246,18 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
     }
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    // controller.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   // TODO: implement dispose
+  //   super.dispose();
+  //   // controller.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
+    // log('My Diary - ${widget.userAddress}');
+    log('Diary Page Widget');
+
     return Container(
       color: FitnessAppTheme.background,
       child: Scaffold(
