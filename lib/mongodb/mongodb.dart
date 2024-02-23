@@ -31,8 +31,23 @@ class MongoDatabase {
 
     final prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString('preventions', data["preventions"]);
-    await prefs.setString('precautions', data["precautions"]);
+    if (prefs.getString('isChanged') == null) {
+      await prefs.setString('isChanged', 'true');
+    }
+
+    if (prefs.getString('pastLangCode') == null) {
+      await prefs.setString('pastLangCode', 'en');
+      await prefs.setString('currentLangCode', 'en');
+    }
+
+    // await prefs.setString('preventions', 'This is preventions.');
+    if (prefs.getString('preventions') == null) {
+      await prefs.setString('preventions', data["preventions"]);
+    }
+
+    if (prefs.getString('precautions') == null) {
+      await prefs.setString('precautions', data["precautions"]);
+    }
 
     return data;
   }

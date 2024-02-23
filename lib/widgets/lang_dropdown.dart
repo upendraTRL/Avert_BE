@@ -30,6 +30,8 @@ class _LangDropdownState extends State<LangDropdown> {
       String pastLangCode, String currentLangCode) async {
     final prefs = await SharedPreferences.getInstance();
 
+    await prefs.setString('isChanged', 'true');
+
     await prefs.setString('pastLangCode', pastLangCode);
     await prefs.setString('currentLangCode', currentLangCode);
 

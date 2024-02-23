@@ -45,9 +45,9 @@ class _PrevAndPrecState extends State<PrevAndPrec>
       ),
     );
 
-    _storeLangCode('en', 'en');
+    // _storeLangCode('en', 'en');
 
-    _getIntFromSharedPref();
+    addAllListData();
 
     // _flutterLocalization = FlutterLocalization.instance;
     // _currentLocale = _flutterLocalization.currentLocale!.languageCode;
@@ -78,15 +78,15 @@ class _PrevAndPrecState extends State<PrevAndPrec>
     super.initState();
   }
 
-  Future<void> _storeLangCode(
-      String pastLangCode, String currentLangCode) async {
-    final prefs = await SharedPreferences.getInstance();
+  // Future<void> _storeLangCode(
+  //     String pastLangCode, String currentLangCode) async {
+  //   final prefs = await SharedPreferences.getInstance();
 
-    await prefs.setString('pastLangCode', pastLangCode);
-    await prefs.setString('currentLangCode', currentLangCode);
+  //   await prefs.setString('pastLangCode', pastLangCode);
+  //   await prefs.setString('currentLangCode', currentLangCode);
 
-    log('Default Lang Code Stored');
-  }
+  //   log('Default Lang Code Stored');
+  // }
 
   void addAllListData() {
     const int count = 9;
@@ -130,7 +130,7 @@ class _PrevAndPrecState extends State<PrevAndPrec>
       BodyView(
         // titleTxt: context.formatString(LocaleData.updates, ['User']),
         // titleTxt: 'prevBodyy',
-        titleTxt: preventions,
+        titleTxt: 'preventions',
         // subTxt: 'Customize',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(
@@ -170,7 +170,7 @@ class _PrevAndPrecState extends State<PrevAndPrec>
     listViews.add(
       BodyView(
         // titleTxt: context.formatString(LocaleData.features, ['User']),
-        titleTxt: precautions,
+        titleTxt: 'precautions',
         // titleTxt: 'precBody',
         // subTxt: 'Today',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -253,27 +253,27 @@ class _PrevAndPrecState extends State<PrevAndPrec>
   // }
 
 //Returning stored value
-  Future<String> _getIntFromSharedPref() async {
-    final prefs = await SharedPreferences.getInstance();
-    preventions = prefs.getString('preventions')!;
-    precautions = prefs.getString('precautions')!;
+  // Future<String> _getIntFromSharedPref() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   preventions = prefs.getString('preventions')!;
+  //   precautions = prefs.getString('precautions')!;
 
-    log('Getting precautions data - $precautions');
+  //   log('Getting precautions data - $precautions');
 
-    // if (startupNumber == null) return 0;
+  //   // if (startupNumber == null) return 0;
 
-    isLoading = false;
+  //   isLoading = false;
 
-    log('Getting Prev Info - $preventions');
+  //   log('Getting Prev Info - $preventions');
 
-    // while (precautions != 'Precautions') {}
+  //   // while (precautions != 'Precautions') {}
 
-    setState(() {
-      addAllListData();
-    });
+  //   setState(() {
+  //     addAllListData();
+  //   });
 
-    return preventions;
-  }
+  //   return preventions;
+  // }
 
   // Future<void> _translatePrevPrec() async {
   //   log('Getting precautions data - $precautions');
@@ -292,27 +292,29 @@ class _PrevAndPrecState extends State<PrevAndPrec>
 
   @override
   Widget build(BuildContext context) {
-    return isLoading == true
-        ? const Center(
-            child: CircularProgressIndicator(
-              color: Colors.purple,
-            ),
-          )
-        : Container(
-            color: FitnessAppTheme.background,
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: Stack(
-                children: <Widget>[
-                  getMainListViewUI(),
-                  getAppBarUI(),
-                  SizedBox(
-                    height: MediaQuery.of(context).padding.bottom,
-                  )
-                ],
-              ),
-            ),
-          );
+    return
+        //  isLoading == true
+        //     ? const Center(
+        //         child: CircularProgressIndicator(
+        //           color: Colors.purple,
+        //         ),
+        //       )
+        //     :
+        Container(
+      color: FitnessAppTheme.background,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: <Widget>[
+            getMainListViewUI(),
+            getAppBarUI(),
+            SizedBox(
+              height: MediaQuery.of(context).padding.bottom,
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Widget getMainListViewUI() {

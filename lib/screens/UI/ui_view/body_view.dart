@@ -29,6 +29,8 @@ class BodyView extends StatefulWidget {
 class _BodyViewState extends State<BodyView> {
   late String titleValue = '';
   late String dummyText = '';
+  late String checkPrev = '';
+  String testText = 'This is preventions.';
 
   late String? currentLocale;
   late String? pastLocale;
@@ -36,35 +38,45 @@ class _BodyViewState extends State<BodyView> {
   @override
   void initState() {
     super.initState();
+    closeOpenData();
     // getLangCodesFromSharedPref();
+  }
+
+  void closeOpenData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String isChanged = prefs.getString('isChanged')!;
+
+    if (isChanged == 'false') {
+      titleValue = prefs.getString('preventions')!;
+    }
   }
 
   // Returning stored value
 
   Future<void> getLangCodesFromSharedPref() async {
     final prefs = await SharedPreferences.getInstance();
+
     pastLocale = prefs.getString('pastLangCode');
     currentLocale = prefs.getString('currentLangCode');
+    String isChanged = prefs.getString('isChanged')!;
 
+    log('Is Changed - $isChanged');
     log('GETTING LANG CODES - $pastLocale, $currentLocale');
 
-    String testText = widget.titleTxt;
+    if (widget.titleTxt == 'preventions') {
+      print('-----------------HERE');
+      if (isChanged == 'true') {
+        translateContent('preventions');
+      }
+    }
+    // else if (widget.titleTxt == 'precautions') {
+    //   testText = 'This is precautions.';
+    //   // testText = prefs.getString('precautions')!;
+    //   translateContent('precautions', testText);
+    // }
+
     // String testText = 'Hello';
     // log('B4 Trasnlation - $testText');
-
-    final translation = await testText.translate(
-      from: pastLocale!,
-      to: currentLocale!,
-    );
-
-    titleValue = translation.text;
-    log('After Trasnlation - $titleValue');
-
-    if (titleValue != testText) {
-      await prefs.setString('preventions', titleValue);
-      // await prefs.setString('precautions', titleValue);
-      setState(() {});
-    }
 
     // if (pastLocale != null && currentLocale != null) {
     //   final translation = await testText.translate(
@@ -83,7 +95,31 @@ class _BodyViewState extends State<BodyView> {
     // }
   }
 
-  void changeContent() {}
+  void translateContent(String setKey) async {
+    final prefs = await SharedPreferences.getInstance();
+    testText = prefs.getString(setKey)!;
+
+    log('B4 Trasnlation - $testText');
+
+    final translation = await testText.translate(
+      from: pastLocale!,
+      to: currentLocale!,
+    );
+
+    titleValue = translation.text;
+    log('After Trasnlation - $titleValue');
+
+    await prefs.setString(setKey, titleValue);
+    await prefs.setString('isChanged', 'false');
+
+    setState(() {});
+
+    // if (checkPrev != titleValue) {
+    //   await prefs.setString(setKey, titleValue);
+    //   print('PAGE LOADED');
+    //   setState(() {});
+    // }
+  }
 
   @override
   void dispose() {
