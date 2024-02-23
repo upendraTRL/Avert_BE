@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:test_1/widgets/lang_dropdown.dart';
 import 'package:translator/translator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:test_1/screens/UI/ui_view/area_list_view.dart';
@@ -197,21 +198,17 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
   List<String> languages = [
     'English',
     'Hindi',
-    'Tamil',
-    'Kannada',
+    'Marathi',
     'Gujrati',
-    'Urdu',
-    'Japanese	',
+    'Telugu',
     'German'
   ];
   List<String> languagescode = [
     'en',
     'hi',
-    'ta',
-    'kn',
-    'gu',
-    'ur',
-    'ja',
+    'mr',
+    'gj',
+    'tu',
     'de',
   ];
   final translator = GoogleTranslator();
@@ -283,6 +280,12 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
       _flutterLocalization.translate('de');
     } else if (value == 'hi') {
       _flutterLocalization.translate('hi');
+    } else if (value == 'mr') {
+      _flutterLocalization.translate('mr');
+    } else if (value == 'gj') {
+      _flutterLocalization.translate('gj');
+    } else if (value == 'tu') {
+      _flutterLocalization.translate('tu');
     } else {
       return;
     }
@@ -374,89 +377,14 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
                                 ),
                               ),
                             ),
-                            // SizedBox(
-                            //   height: 38,
-                            //   width: 38,
-                            //   child: InkWell(
-                            //     highlightColor: Colors.transparent,
-                            //     borderRadius: const BorderRadius.all(
-                            //         Radius.circular(32.0)),
-                            //     onTap: () {},
-                            //     child: Center(
-                            //       child: Icon(
-                            //         Icons.keyboard_arrow_left,
-                            //         color: FitnessAppTheme.grey,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
-                            Padding(
-                              padding: const EdgeInsets.only(
+                            const Padding(
+                              padding: EdgeInsets.only(
                                 left: 8,
                                 right: 8,
                               ),
                               child: Row(
                                 children: <Widget>[
-                                  // Padding(
-                                  //   padding: const EdgeInsets.only(right: 8),
-                                  //   child: Icon(
-                                  //     Icons.calendar_today,
-                                  //     color: FitnessAppTheme.grey,
-                                  //     size: 18,
-                                  //   ),
-                                  // ),
-                                  DropdownButton(
-                                    value: dropdownValue,
-                                    icon: const Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      child: Icon(Icons.translate),
-                                    ),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        dropdownValue = newValue!;
-                                      });
-                                      _currentLocale = dropdownValue;
-                                      _setLocale(dropdownValue);
-
-                                      // langTrans();
-                                      // addAllListData();
-                                      print('Code - $dropdownValue');
-                                    },
-                                    items: const [
-                                      DropdownMenuItem<String>(
-                                        value: 'English',
-                                        child: Text('English'),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: 'hi',
-                                        child: Text('हिंदी'),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: 'de',
-                                        child: Text('मराठी'),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: 'en',
-                                        child: Text('ગુજરાતી'),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: 'Kannada',
-                                        child: Text('ಕನ್ನಡ'),
-                                      ),
-                                    ],
-                                  ),
-                                  // Text(
-                                  //   '15 May',
-                                  //   textAlign: TextAlign.left,
-                                  //   style: TextStyle(
-                                  //     fontFamily: FitnessAppTheme.fontName,
-                                  //     fontWeight: FontWeight.normal,
-                                  //     fontSize: 18,
-                                  //     letterSpacing: -0.2,
-                                  //     color: FitnessAppTheme.darkerText,
-                                  //   ),
-                                  // ),
+                                  LangDropdown(),
                                 ],
                               ),
                             ),

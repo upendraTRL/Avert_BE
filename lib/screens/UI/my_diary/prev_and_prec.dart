@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_1/widgets/lang_dropdown.dart';
 import 'package:translator/translator.dart';
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:test_1/screens/UI/ui_view/body_view.dart';
@@ -21,9 +25,13 @@ class PrevAndPrec extends StatefulWidget {
 class _PrevAndPrecState extends State<PrevAndPrec>
     with TickerProviderStateMixin {
   Animation<double>? topBarAnimation;
+  String preventions = 'Preventions';
+  String precautions = 'Precautions';
+  // late String _pastLocale;
+  bool isLoading = true;
 
-  late FlutterLocalization _flutterLocalization;
-  late String _currentLocale;
+  // late FlutterLocalization _flutterLocalization;
+  // late String _currentLocale;
   List<Widget> listViews = <Widget>[];
   final ScrollController scrollController = ScrollController();
   double topBarOpacity = 0.0;
@@ -37,9 +45,12 @@ class _PrevAndPrecState extends State<PrevAndPrec>
       ),
     );
 
-    _flutterLocalization = FlutterLocalization.instance;
-    _currentLocale = _flutterLocalization.currentLocale!.languageCode;
-    addAllListData();
+    _storeLangCode('en', 'en');
+
+    _getIntFromSharedPref();
+
+    // _flutterLocalization = FlutterLocalization.instance;
+    // _currentLocale = _flutterLocalization.currentLocale!.languageCode;
 
     scrollController.addListener(() {
       if (scrollController.offset >= 24) {
@@ -63,7 +74,18 @@ class _PrevAndPrecState extends State<PrevAndPrec>
         }
       }
     });
+
     super.initState();
+  }
+
+  Future<void> _storeLangCode(
+      String pastLangCode, String currentLangCode) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('pastLangCode', pastLangCode);
+    await prefs.setString('currentLangCode', currentLangCode);
+
+    log('Default Lang Code Stored');
   }
 
   void addAllListData() {
@@ -107,8 +129,8 @@ class _PrevAndPrecState extends State<PrevAndPrec>
     listViews.add(
       BodyView(
         // titleTxt: context.formatString(LocaleData.updates, ['User']),
-        titleTxt: 'prevBody',
-        // titleTxt: (updateTitle),
+        // titleTxt: 'prevBodyy',
+        titleTxt: preventions,
         // subTxt: 'Customize',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(
@@ -148,7 +170,8 @@ class _PrevAndPrecState extends State<PrevAndPrec>
     listViews.add(
       BodyView(
         // titleTxt: context.formatString(LocaleData.features, ['User']),
-        titleTxt: 'precBody',
+        titleTxt: precautions,
+        // titleTxt: 'precBody',
         // subTxt: 'Today',
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(
@@ -171,63 +194,94 @@ class _PrevAndPrecState extends State<PrevAndPrec>
   }
 
   //Translation logic
-  String dropdownValue = 'English';
-  final String _currentAddress = "";
-  String latData = '111';
-  String longData = '222';
-  String addressData = 'India';
+  // String dropdownValue = 'English';
+  // final String _currentAddress = "";
+  // String latData = '111';
+  // String longData = '222';
+  // String addressData = 'India';
 
-  List<String> languages = [
-    'English',
-    'Hindi',
-    'Tamil',
-    'Kannada',
-    'Gujrati',
-    'Urdu',
-    'Japanese	',
-    'German'
-  ];
-  List<String> languagescode = [
-    'en',
-    'hi',
-    'ta',
-    'kn',
-    'gu',
-    'ur',
-    'ja',
-    'de',
-  ];
-  final translator = GoogleTranslator();
-  String defaultFrom = 'en';
-  String from = 'en';
-  String to = 'hi';
-  String selectedvalue2 = 'Hindi';
-  bool isloading = false;
-  translate() async {
-    try {
-      await translator
-          .translate(_currentAddress, from: from, to: to)
-          .then((value) {
-        print("Frommmmmmmmmmm 1 - " + from);
-        print("Tooooooooooooo 1 - " + to);
-        addressData = value.text;
-        isloading = false;
-        setState(() {});
-        // print("Afterrrrrrrrrrrr - " + addressData);
-        // print("Frommmmmmmmmmm 1 - " + from);
-        // print("Tooooooooooooo 2 - " + to);
-      });
-    } on SocketException catch (_) {
-      isloading = true;
-      SnackBar mysnackbar = const SnackBar(
-        content: Text('Internet not Connected'),
-        backgroundColor: Colors.red,
-        duration: Duration(seconds: 5),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(mysnackbar);
-      setState(() {});
-    }
+  // List<String> languages = [
+  //   'English',
+  //   'Hindi',
+  //   'Tamil',
+  //   'Kannada',
+  //   'Gujrati',
+  //   'Urdu',
+  //   'Japanese	',
+  //   'German'
+  // ];
+  // List<String> languagescode = [
+  //   'en',
+  //   'hi',
+  //   'ta',
+  //   'kn',
+  //   'gu',
+  //   'ur',
+  //   'ja',
+  //   'de',
+  // ];
+  // final translator = GoogleTranslator();
+  // String defaultFrom = 'en';
+  // String from = 'en';
+  // String to = 'hi';
+  // String selectedvalue2 = 'Hindi';
+  // bool isloading = false;
+  // translate() async {
+  //   try {
+  //     await translator
+  //         .translate(_currentAddress, from: from, to: to)
+  //         .then((value) {
+  //       print("Frommmmmmmmmmm 1 - " + from);
+  //       print("Tooooooooooooo 1 - " + to);
+  //       addressData = value.text;
+  //       isloading = false;
+  //       setState(() {});
+  //       // print("Afterrrrrrrrrrrr - " + addressData);
+  //       // print("Frommmmmmmmmmm 1 - " + from);
+  //       // print("Tooooooooooooo 2 - " + to);
+  //     });
+  //   } on SocketException catch (_) {
+  //     isloading = true;
+  //     SnackBar mysnackbar = const SnackBar(
+  //       content: Text('Internet not Connected'),
+  //       backgroundColor: Colors.red,
+  //       duration: Duration(seconds: 5),
+  //     );
+  //     ScaffoldMessenger.of(context).showSnackBar(mysnackbar);
+  //     setState(() {});
+  //   }
+  // }
+
+//Returning stored value
+  Future<String> _getIntFromSharedPref() async {
+    final prefs = await SharedPreferences.getInstance();
+    preventions = prefs.getString('preventions')!;
+    precautions = prefs.getString('precautions')!;
+
+    log('Getting precautions data - $precautions');
+
+    // if (startupNumber == null) return 0;
+
+    isLoading = false;
+
+    log('Getting Prev Info - $preventions');
+
+    // while (precautions != 'Precautions') {}
+
+    setState(() {
+      addAllListData();
+    });
+
+    return preventions;
   }
+
+  // Future<void> _translatePrevPrec() async {
+  //   log('Getting precautions data - $precautions');
+
+  //   setState(() {
+  //     addAllListData();
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -238,38 +292,27 @@ class _PrevAndPrecState extends State<PrevAndPrec>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: FitnessAppTheme.background,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(
-          children: <Widget>[
-            getMainListViewUI(),
-            getAppBarUI(),
-            SizedBox(
-              height: MediaQuery.of(context).padding.bottom,
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _setLocale(String? value) {
-    if (value == null) return;
-    if (value == 'en') {
-      _flutterLocalization.translate('en');
-    } else if (value == 'de') {
-      _flutterLocalization.translate('de');
-    } else if (value == 'hi') {
-      _flutterLocalization.translate('hi');
-    } else {
-      return;
-    }
-
-    setState(() {
-      _currentLocale = value;
-    });
+    return isLoading == true
+        ? const Center(
+            child: CircularProgressIndicator(
+              color: Colors.purple,
+            ),
+          )
+        : Container(
+            color: FitnessAppTheme.background,
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Stack(
+                children: <Widget>[
+                  getMainListViewUI(),
+                  getAppBarUI(),
+                  SizedBox(
+                    height: MediaQuery.of(context).padding.bottom,
+                  )
+                ],
+              ),
+            ),
+          );
   }
 
   Widget getMainListViewUI() {
@@ -354,22 +397,6 @@ class _PrevAndPrecState extends State<PrevAndPrec>
                                 ),
                               ),
                             ),
-                            // SizedBox(
-                            //   height: 38,
-                            //   width: 38,
-                            //   child: InkWell(
-                            //     highlightColor: Colors.transparent,
-                            //     borderRadius: const BorderRadius.all(
-                            //         Radius.circular(32.0)),
-                            //     onTap: () {},
-                            //     child: Center(
-                            //       child: Icon(
-                            //         Icons.keyboard_arrow_left,
-                            //         color: FitnessAppTheme.grey,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
                             Padding(
                               padding: const EdgeInsets.only(
                                 left: 8,
@@ -377,66 +404,52 @@ class _PrevAndPrecState extends State<PrevAndPrec>
                               ),
                               child: Row(
                                 children: <Widget>[
-                                  // Padding(
-                                  //   padding: const EdgeInsets.only(right: 8),
-                                  //   child: Icon(
-                                  //     Icons.calendar_today,
-                                  //     color: FitnessAppTheme.grey,
-                                  //     size: 18,
+                                  LangDropdown(),
+                                  // DropdownButton(
+                                  //   value: _currentLocale,
+                                  //   icon: const Padding(
+                                  //     padding:
+                                  //         EdgeInsets.symmetric(horizontal: 10),
+                                  //     child: Icon(Icons.translate),
                                   //   ),
-                                  // ),
-                                  DropdownButton(
-                                    value: dropdownValue,
-                                    icon: const Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 10),
-                                      child: Icon(Icons.translate),
-                                    ),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        dropdownValue = newValue!;
-                                      });
-                                      _currentLocale = dropdownValue;
-                                      _setLocale(dropdownValue);
-
-                                      // langTrans();
-                                      // addAllListData();
-                                      print('Code - $dropdownValue');
-                                    },
-                                    items: const [
-                                      DropdownMenuItem<String>(
-                                        value: 'English',
-                                        child: Text('English'),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: 'hi',
-                                        child: Text('हिंदी'),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: 'de',
-                                        child: Text('मराठी'),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: 'en',
-                                        child: Text('ગુજરાતી'),
-                                      ),
-                                      DropdownMenuItem<String>(
-                                        value: 'Kannada',
-                                        child: Text('ಕನ್ನಡ'),
-                                      ),
-                                    ],
-                                  ),
-                                  // Text(
-                                  //   '15 May',
-                                  //   textAlign: TextAlign.left,
-                                  //   style: TextStyle(
-                                  //     fontFamily: FitnessAppTheme.fontName,
-                                  //     fontWeight: FontWeight.normal,
-                                  //     fontSize: 18,
-                                  //     letterSpacing: -0.2,
-                                  //     color: FitnessAppTheme.darkerText,
-                                  //   ),
-                                  // ),
+                                  //   onChanged: (value) async {
+                                  //     _pastLocale = _currentLocale;
+                                  //     _setLocale(value);
+                                  //     log('Past = $_pastLocale');
+                                  //     log('Current = $_currentLocale');
+                                  //     final translation =
+                                  //         await precautions.translate(
+                                  //       from: _pastLocale,
+                                  //       to: _currentLocale,
+                                  //     );
+                                  //     setState(() {
+                                  //       precautions = translation.text;
+                                  //       _translatePrevPrec();
+                                  //     });
+                                  //   },
+                                  //   items: const [
+                                  //     DropdownMenuItem(
+                                  //       value: 'en',
+                                  //       child: Text('English'),
+                                  //     ),
+                                  //     DropdownMenuItem(
+                                  //       value: 'hi',
+                                  //       child: Text('हिंदी'),
+                                  //     ),
+                                  //     DropdownMenuItem(
+                                  //       value: 'mr',
+                                  //       child: Text('मराठी'),
+                                  //     ),
+                                  //     DropdownMenuItem(
+                                  //       value: 'gj',
+                                  //       child: Text('ગુજરાતી'),
+                                  //     ),
+                                  //     DropdownMenuItem(
+                                  //       value: 'tu',
+                                  //       child: Text('తెలుగు'),
+                                  //     ),
+                                  //   ],
+                                  // )
                                 ],
                               ),
                             ),
@@ -448,12 +461,6 @@ class _PrevAndPrecState extends State<PrevAndPrec>
                                 borderRadius: const BorderRadius.all(
                                     Radius.circular(32.0)),
                                 onTap: () {},
-                                // child: Center(
-                                //   child: Icon(
-                                //     Icons.keyboard_arrow_right,
-                                //     color: FitnessAppTheme.grey,
-                                //   ),
-                                // ),
                               ),
                             ),
                           ],

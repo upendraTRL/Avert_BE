@@ -1,8 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:test_1/localization/locales.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
 import 'package:flutter/material.dart';
-
 
 class TitleView extends StatefulWidget {
   const TitleView({
@@ -27,21 +28,18 @@ class _TitleViewState extends State<TitleView> {
 
   @override
   Widget build(BuildContext context) {
+    log('Title View Page');
+
     if (widget.titleTxt == 'Updates') {
       titleValue = context.formatString(LocaleData.updates, ['']);
     } else if (widget.titleTxt == 'Features') {
       titleValue = context.formatString(LocaleData.features, ['']);
     } else if (widget.titleTxt == 'prevTitle') {
       titleValue = context.formatString(LocaleData.prevTitle, ['']);
-    } else if (widget.titleTxt == 'prevBody') {
-      titleValue = context.formatString(LocaleData.prevBody, ['']);
     } else if (widget.titleTxt == 'precTitle') {
       titleValue = context.formatString(LocaleData.precTitle, ['']);
-    } else if (widget.titleTxt == 'precBody') {
-      titleValue = context.formatString(LocaleData.precBody, ['']);
     }
 
-    print('ASKHFGKASUGF');
     return AnimatedBuilder(
       animation: widget.animationController!,
       builder: (BuildContext context, Widget? child) {

@@ -1,11 +1,12 @@
 import 'dart:developer';
 
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_1/mongodb/constant.dart';
 import 'package:test_1/mongodb/user_model.dart';
 
 class MongoDatabase {
-  static var db, userCollection;
+  static var db, userCollection, disasterInfoCollection;
 
   static connect() async {
     db = await Db.create(MONGO_CONN_URL);
@@ -13,6 +14,7 @@ class MongoDatabase {
     print('Inspect - ');
     inspect(db);
     userCollection = db.collection(USER_COLLECTION);
+    disasterInfoCollection = db.collection(DISASTER_INFO_COLLECTION);
   }
 
   static Future<List<Map<String, dynamic>>> getData() async {
@@ -21,11 +23,17 @@ class MongoDatabase {
   }
 
   //USE FOR QUERY
-  static Future<List<Map<String, dynamic>>> getQueryData() async {
-    // var whereCondition = "where.gt('latitude',${150}).lt('longitude',${170})";
-    final data = await userCollection
-        .find(where.gt('latitude', '100').lt('latitude', '200'))
-        .toList();
+  // static Future<List<Map<String, dynamic>>> getQueryData(
+  static Future<void> getQueryData(String userAddress) async {
+    final data = await disasterInfoCollection.findOne({"address": userAddress});
+
+    // log(data["preventions"]);
+
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('preventions', data["preventions"]);
+    await prefs.setString('precautions', data["precautions"]);
+
     return data;
   }
 

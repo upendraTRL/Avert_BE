@@ -12,7 +12,6 @@ class Model {
   // String fname;
   String latitude;
   String longitude;
-  // String address;
 
   Model({
     // required this.id,
@@ -20,7 +19,6 @@ class Model {
     // required this.fname,
     required this.latitude,
     required this.longitude,
-    // required this.address,
   });
 
   factory Model.fromJson(Map<String, dynamic> json) => Model(

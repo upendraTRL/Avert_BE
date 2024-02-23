@@ -100,6 +100,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
   String _currentAddress = "";
   String latData = '111';
   String longData = '222';
+  var userAddress = 'India';
 
   Future<Position> _getCurrentLocation() async {
     servicePermission = await Geolocator.isLocationServiceEnabled();
@@ -117,7 +118,18 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
   _getAddressFromCoordinates() async {
     try {
       List<Placemark> placemarks = await placemarkFromCoordinates(
-          _currentLocation!.latitude, _currentLocation!.longitude);
+        _currentLocation!.latitude,
+        _currentLocation!.longitude,
+      );
+
+      var userLat = _currentLocation!.latitude;
+      var userLong = _currentLocation!.longitude;
+
+      log('User Lat - $userLat');
+
+      if (userLat >= 18.9220 && userLat <= 19.0596) {
+        userAddress = 'Mumbai';
+      }
 
       Placemark place = placemarks[0];
       setState(() {
@@ -191,6 +203,8 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
   Future<bool> getData() async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 200));
+    // MongoDatabase.getQueryData('Mumbai');
+    MongoDatabase.getQueryData(userAddress);
     return true;
   }
 
@@ -220,7 +234,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                   //         animationController: animationController,
                   //         userAddress: addressData,
                   //       );
-                  MyDiaryScreen(
+                  tabBody = MyDiaryScreen(
                     animationController: animationController,
                     // userAddress: addressData,
                   );
@@ -245,8 +259,8 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
   }
 
   //MongoDB functions
-  Future<void> _updateData(String mobileNo, String lat, String long) async {
-    final updateData = Model(mobile: mobileNo, latitude: lat, longitude: long);
-    await MongoDatabase.update(updateData);
-  }
+  // Future<void> _updateData(String mobileNo, String lat, String long) async {
+  //   final updateData = Model(mobile: mobileNo, latitude: lat, longitude: long);
+  //   await MongoDatabase.update(updateData);
+  // }
 }

@@ -38,7 +38,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
   void initState() {
     super.initState();
 
-    Timer(Duration(seconds: 5), () {
+    Timer(Duration(seconds: 2), () {
       _getIntFromSharedPref();
       setState(() {});
     });
@@ -124,8 +124,6 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
 
   @override
   Widget build(BuildContext context) {
-    log('Medi Widget - $isAddressLoading');
-
     final ap = Provider.of<AuthProvider>(context, listen: false);
     return AnimatedBuilder(
       animation: widget.animationController!,
@@ -214,7 +212,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                               padding: const EdgeInsets.only(
                                                   left: 4, bottom: 2),
                                               child: Text(
-                                                // widget.userAddress!,
+                                                // userAddress,
                                                 'Shivaji Nagar, Pune',
                                                 textAlign: TextAlign.center,
                                                 style: const TextStyle(
