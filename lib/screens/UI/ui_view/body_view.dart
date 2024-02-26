@@ -69,6 +69,12 @@ class _BodyViewState extends State<BodyView> {
         translateContent('preventions');
       }
     }
+    if (widget.titleTxt == 'precautions') {
+      print('-----------------HERE');
+      if (isChanged == 'true') {
+        translateContent('precautions');
+      }
+    }
     // else if (widget.titleTxt == 'precautions') {
     //   testText = 'This is precautions.';
     //   // testText = prefs.getString('precautions')!;
@@ -193,7 +199,8 @@ class _BodyViewState extends State<BodyView> {
                     ),
                     InkWell(
                       highlightColor: Colors.transparent,
-                      borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(4.0)),
                       onTap: () {},
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8),
@@ -202,7 +209,7 @@ class _BodyViewState extends State<BodyView> {
                             Text(
                               widget.subTxt,
                               textAlign: TextAlign.left,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: FitnessAppTheme.fontName,
                                 fontWeight: FontWeight.normal,
                                 fontSize: 16,
@@ -210,7 +217,7 @@ class _BodyViewState extends State<BodyView> {
                                 color: FitnessAppTheme.nearlyDarkBlue,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 38,
                               width: 26,
                               child: Icon(

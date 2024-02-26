@@ -130,6 +130,9 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
       if (userLat >= 18.9220 && userLat <= 19.0596) {
         userAddress = 'Mumbai';
       }
+      if (userLat >= 18.5679 && userLat <= 18.6011) {
+        userAddress = 'Pune';
+      }
 
       Placemark place = placemarks[0];
       setState(() {
