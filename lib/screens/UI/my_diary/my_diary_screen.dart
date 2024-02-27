@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:test_1/screens/UI/ui_view/prev_prec_info.dart';
 import 'package:test_1/widgets/lang_dropdown.dart';
 import 'package:translator/translator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -97,7 +98,8 @@ class _MyDiaryScreenState extends State<MyDiaryScreen>
   void addAllListData() {
     const int count = 9;
     listViews.add(
-      MediterranesnDietView(
+      // MediterranesnDietView(
+      PrevPrecInfo(
         // userAddress: widget.userAddress,
         animation: Tween<double>(begin: 0.0, end: 1.0).animate(
           CurvedAnimation(

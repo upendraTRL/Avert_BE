@@ -41,12 +41,16 @@ class MongoDatabase {
     }
 
     // await prefs.setString('preventions', 'This is preventions.');
-    if (prefs.getString('preventions') == null || prefs.getString('preventions') != data) {
+    if (prefs.getString('preventions') == null ||
+        prefs.getString('preventions') != data) {
       await prefs.setString('preventions', data["preventions"]);
     }
 
-    if (prefs.getString('precautions') == null || prefs.getString('precautions') != data) {
+    if (prefs.getString('precautions') == null ||
+        prefs.getString('precautions') != data) {
       await prefs.setString('precautions', data["precautions"]);
+
+      await prefs.setString('caution', data["disaster_type"]);
     }
 
     return data;

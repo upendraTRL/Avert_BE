@@ -137,7 +137,8 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
       Placemark place = placemarks[0];
       setState(() {
         _currentAddress =
-            "${place.subLocality}, ${place.locality}, ${place.country}";
+            "${place.subLocality}, ${place.locality}";
+            // "${place.subLocality}, ${place.locality}, ${place.country}";
         addressData = _currentAddress;
       });
     } catch (e) {

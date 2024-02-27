@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter_localization/flutter_localization.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_1/localization/locales.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
@@ -10,24 +13,51 @@ import 'dart:math' as math;
 
 import 'package:test_1/screens/welcome_screen.dart';
 
-class PrevPrecInfo extends StatelessWidget {
+class PrevPrecInfo extends StatefulWidget {
+  const PrevPrecInfo({
+    super.key,
+    this.animation,
+    this.animationController,
+  });
+
   final AnimationController? animationController;
   final Animation<double>? animation;
 
-  const PrevPrecInfo({Key? key, this.animationController, this.animation})
-      : super(key: key);
+  @override
+  State<PrevPrecInfo> createState() => _PrevPrecInfoState();
+}
+
+class _PrevPrecInfoState extends State<PrevPrecInfo> {
+  String userAddress = '';
+  String caution = '';
+  bool isLoading = true;
+
+  Future<void> getAddressFromSharedPref() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    userAddress = prefs.getString('userAddress')!;
+    caution = prefs.getString('caution')!;
+
+    isLoading = false;
+    setState() {}
+
+    log('User Address - $userAddress');
+    log('Caution Type - $caution');
+  }
 
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
+    getAddressFromSharedPref();
+
     return AnimatedBuilder(
-      animation: animationController!,
+      animation: widget.animationController!,
       builder: (BuildContext context, Widget? child) {
         return FadeTransition(
-          opacity: animation!,
+          opacity: widget.animation!,
           child: Transform(
             transform: Matrix4.translationValues(
-                0.0, 30 * (1.0 - animation!.value), 0.0),
+                0.0, 30 * (1.0 - widget.animation!.value), 0.0),
             child: Padding(
               padding: const EdgeInsets.only(
                   left: 24, right: 24, top: 16, bottom: 18),
@@ -83,8 +113,11 @@ class PrevPrecInfo extends StatelessWidget {
                                               padding: EdgeInsets.only(
                                                   left: 4, bottom: 2),
                                               child: Text(
-                                                context.formatString(
-                                                    LocaleData.infoAddress, []),
+                                                (userAddress != '')
+                                                    ? userAddress
+                                                    : 'Loading...',
+                                                // context.formatString(
+                                                //     LocaleData.infoAddress, []),
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                     fontFamily: FitnessAppTheme
@@ -135,9 +168,12 @@ class PrevPrecInfo extends StatelessWidget {
                                               padding: EdgeInsets.only(
                                                   left: 4, bottom: 2),
                                               child: Text(
-                                                context.formatString(
-                                                    LocaleData.infoCalamity,
-                                                    []),
+                                                (caution != '')
+                                                    ? 'Caution: $caution'
+                                                    : 'Loading...',
+                                                // context.formatString(
+                                                //     LocaleData.infoCalamity,
+                                                //     []),
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                     fontFamily: FitnessAppTheme
