@@ -29,7 +29,8 @@ class BodyView extends StatefulWidget {
 class _BodyViewState extends State<BodyView> {
   late String titleValue = '';
   late String dummyText = '';
-  late String checkPrev = '';
+  String toBeTranslated = '';
+  late String checkTitle = '';
   String testText = 'This is preventions.';
 
   late String? currentLocale;
@@ -44,10 +45,10 @@ class _BodyViewState extends State<BodyView> {
 
   void closeOpenData() async {
     final prefs = await SharedPreferences.getInstance();
-    String isChanged = prefs.getString('isChanged')!;
+    checkTitle = prefs.getString('checkTitle')!;
 
-    if (isChanged == 'false') {
-      titleValue = prefs.getString('preventions')!;
+    if (prefs.getString('displayText$checkTitle') != null) {
+      titleValue = prefs.getString('displayText$checkTitle')!;
     }
   }
 
@@ -65,12 +66,14 @@ class _BodyViewState extends State<BodyView> {
 
     if (widget.titleTxt == 'preventions') {
       print('-----------------HERE');
+      await prefs.setString('checkTitle', 'preventions');
       if (isChanged == 'true') {
         translateContent('preventions');
       }
     }
     if (widget.titleTxt == 'precautions') {
       print('-----------------HERE');
+      await prefs.setString('checkTitle', 'precautions');
       if (isChanged == 'true') {
         translateContent('precautions');
       }
@@ -103,11 +106,19 @@ class _BodyViewState extends State<BodyView> {
 
   void translateContent(String setKey) async {
     final prefs = await SharedPreferences.getInstance();
-    testText = prefs.getString(setKey)!;
+    // testText = prefs.getString(setKey)!;
 
-    log('B4 Trasnlation - $testText');
+    if (prefs.getString('displayText$setKey') == null) {
+      //When app is runned for the very first time.
+      log('APP RUNNED FIRST TIME');
+      toBeTranslated = prefs.getString(setKey)!;
+    } else {
+      toBeTranslated = prefs.getString('displayText$setKey')!;
+    }
 
-    final translation = await testText.translate(
+    log('B4 Trasnlation - $toBeTranslated');
+
+    final translation = await toBeTranslated.translate(
       from: pastLocale!,
       to: currentLocale!,
     );
@@ -115,7 +126,7 @@ class _BodyViewState extends State<BodyView> {
     titleValue = translation.text;
     log('After Trasnlation - $titleValue');
 
-    await prefs.setString(setKey, titleValue);
+    await prefs.setString('displayText$setKey', titleValue);
     await prefs.setString('isChanged', 'false');
 
     setState(() {});
