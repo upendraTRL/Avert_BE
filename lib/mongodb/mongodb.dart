@@ -51,6 +51,8 @@ class MongoDatabase {
       await prefs.setString('precautions', data["precautions"]);
 
       await prefs.setString('caution', data["disaster_type"]);
+      await prefs.setString('locChanged', 'true');
+
     }
 
     return data;

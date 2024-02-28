@@ -38,11 +38,13 @@ class _PrevPrecInfoState extends State<PrevPrecInfo> {
     userAddress = prefs.getString('userAddress')!;
     caution = prefs.getString('caution')!;
 
-    isLoading = false;
-    setState() {}
+    if (isLoading == true) {
+      isLoading = false;
+      setState(() {});
 
-    log('User Address - $userAddress');
-    log('Caution Type - $caution');
+      log('User Address - $userAddress');
+      log('Caution Type - $caution');
+    }
   }
 
   @override

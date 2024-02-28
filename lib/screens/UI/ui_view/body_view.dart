@@ -28,7 +28,8 @@ class BodyView extends StatefulWidget {
 
 class _BodyViewState extends State<BodyView> {
   late String titleValue = '';
-  late String prevValue = '';
+  late String prevInfo = 'Loading...';
+  late String precInfo = 'Loading...';
   late String dummyText = '';
   String toBeTranslated = '';
   late String checkTitle = '';
@@ -51,14 +52,17 @@ class _BodyViewState extends State<BodyView> {
     checkTitle = prefs.getString('checkTitle')!;
 
     if (prefs.getString('displayText$checkTitle') != null) {
-      titleValue = prefs.getString('displayText$checkTitle')!;
+      prevInfo = prefs.getString('displayTextpreventions')!;
+      precInfo = prefs.getString('displayTextprecautions')!;
 
-      if (prefs.getString('displayText$checkTitle') == 'precautions') {
-        Timer(Duration(seconds: 3), () {
-          titleValue = prefs.getString('displayTextprecautions')!;
-        });
-      }
+      // titleValue = prefs.getString('displayText$checkTitle')!;
+
+      // if (prefs.getString('displayText$checkTitle') == 'precautions') {
+      //   precInfo = prefs.getString('displayTextprecautions')!;
+      //   // titleValue = prefs.getString('displayTextprecautions')!;
+      // }
     }
+    // isLoading = false;
   }
 
   // Returning stored value
@@ -69,22 +73,28 @@ class _BodyViewState extends State<BodyView> {
     pastLocale = prefs.getString('pastLangCode');
     currentLocale = prefs.getString('currentLangCode');
     String isChanged = prefs.getString('isChanged')!;
+    String locChanged = prefs.getString('locChanged')!;
 
-    log('Is Changed - $isChanged');
+    log('Loc Changed - $locChanged');
     log('GETTING LANG CODES - $pastLocale, $currentLocale');
 
     if (widget.titleTxt == 'preventions') {
       print('-----------------HERE');
       await prefs.setString('checkTitle', 'preventions');
-      if (isChanged == 'true') {
+      if (isChanged == 'true' || locChanged == 'true') {
         translateContent('preventions');
+        // prevInfo = titleValue;
+        // setState(() {});
       }
     }
     if (widget.titleTxt == 'precautions') {
       print('-----------------HERE');
       await prefs.setString('checkTitle', 'precautions');
-      if (isChanged == 'true') {
+      if (isChanged == 'true' || locChanged == 'true') {
         translateContent('precautions');
+        log('Prec Info - $titleValue');
+        // precInfo = titleValue;
+        // setState(() {});
       }
     }
     // else if (widget.titleTxt == 'precautions') {
@@ -125,7 +135,7 @@ class _BodyViewState extends State<BodyView> {
       toBeTranslated = prefs.getString('displayText$setKey')!;
     }
 
-    log('B4 Trasnlation - $toBeTranslated');
+    // log('B4 Trasnlation - $toBeTranslated');
 
     final translation = await toBeTranslated.translate(
       from: pastLocale!,
@@ -133,12 +143,16 @@ class _BodyViewState extends State<BodyView> {
     );
 
     titleValue = translation.text;
-    log('After Trasnlation - $titleValue');
+    // log('After Trasnlation - $titleValue');
 
     await prefs.setString('displayText$setKey', titleValue);
     await prefs.setString('isChanged', 'false');
 
     isLoading = false;
+
+    closeOpenData();
+
+    await prefs.setString('locChanged', 'false');
 
     setState(() {});
 
@@ -190,81 +204,86 @@ class _BodyViewState extends State<BodyView> {
     //   // setState(() {});
     // }
 
-    return isLoading
-        ? const Center(
-            child: CircularProgressIndicator(
-              color: Colors.purple,
-            ),
-          )
-        : AnimatedBuilder(
-            animation: widget.animationController!,
-            builder: (BuildContext context, Widget? child) {
-              return FadeTransition(
-                opacity: widget.animation!,
-                child: Transform(
-                  transform: Matrix4.translationValues(
-                      0.0, 30 * (1.0 - widget.animation!.value), 0.0),
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 24, right: 24),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: Text(
-                              titleValue,
-                              // widget.titleTxt,
-                              // AppLocalizations.of(context)!.helloWorld,
-                              textAlign: TextAlign.justify,
-                              style: const TextStyle(
-                                fontFamily: FitnessAppTheme.fontName,
-                                fontWeight: FontWeight.w300,
-                                fontSize: 16,
-                                letterSpacing: 0.5,
-                                color: FitnessAppTheme.lightText,
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            highlightColor: Colors.transparent,
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(4.0)),
-                            onTap: () {},
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: Row(
-                                children: <Widget>[
-                                  Text(
-                                    widget.subTxt,
-                                    textAlign: TextAlign.left,
-                                    style: const TextStyle(
-                                      fontFamily: FitnessAppTheme.fontName,
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 16,
-                                      letterSpacing: 0.5,
-                                      color: FitnessAppTheme.nearlyDarkBlue,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 38,
-                                    width: 26,
-                                    child: Icon(
-                                      Icons.arrow_forward,
-                                      color: Color.fromARGB(0, 0, 0, 0),
-                                      size: 18,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
+    return
+        // isLoading
+        //     ? const Center(
+        //         child: CircularProgressIndicator(
+        //           color: Colors.purple,
+        //         ),
+        //       )
+        //     :
+        AnimatedBuilder(
+      animation: widget.animationController!,
+      builder: (BuildContext context, Widget? child) {
+        return FadeTransition(
+          opacity: widget.animation!,
+          child: Transform(
+            transform: Matrix4.translationValues(
+                0.0, 30 * (1.0 - widget.animation!.value), 0.0),
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 10),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 24, right: 24),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Text(
+                        (widget.titleTxt == 'preventions')
+                            ? prevInfo
+                            : precInfo,
+                        // titleValue,
+                        // widget.titleTxt,
+                        // AppLocalizations.of(context)!.helloWorld,
+                        textAlign: TextAlign.justify,
+                        style: const TextStyle(
+                          fontFamily: FitnessAppTheme.fontName,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 16,
+                          letterSpacing: 0.5,
+                          color: FitnessAppTheme.lightText,
+                        ),
                       ),
                     ),
-                  ),
+                    InkWell(
+                      highlightColor: Colors.transparent,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(4.0)),
+                      onTap: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Row(
+                          children: <Widget>[
+                            Text(
+                              widget.subTxt,
+                              textAlign: TextAlign.left,
+                              style: const TextStyle(
+                                fontFamily: FitnessAppTheme.fontName,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16,
+                                letterSpacing: 0.5,
+                                color: FitnessAppTheme.nearlyDarkBlue,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 38,
+                              width: 26,
+                              child: Icon(
+                                Icons.arrow_forward,
+                                color: Color.fromARGB(0, 0, 0, 0),
+                                size: 18,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
                 ),
-              );
-            },
-          );
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
