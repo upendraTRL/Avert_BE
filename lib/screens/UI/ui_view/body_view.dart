@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_1/localization/locales.dart';
+import 'package:test_1/mongodb/mongodb.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:translator/translator.dart';
@@ -43,125 +45,125 @@ class _BodyViewState extends State<BodyView> {
   @override
   void initState() {
     super.initState();
-    closeOpenData();
+    // closeOpenData();
     // getLangCodesFromSharedPref();
   }
 
-  void closeOpenData() async {
-    final prefs = await SharedPreferences.getInstance();
-    checkTitle = prefs.getString('checkTitle')!;
+  // void closeOpenData() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   checkTitle = prefs.getString('checkTitle')!;
 
-    if (prefs.getString('displayText$checkTitle') != null) {
-      prevInfo = prefs.getString('displayTextpreventions')!;
-      precInfo = prefs.getString('displayTextprecautions')!;
+  //   if (prefs.getString('displayText$checkTitle') != null) {
+  //     prevInfo = prefs.getString('displayTextpreventions')!;
+  //     precInfo = prefs.getString('displayTextprecautions')!;
 
-      // titleValue = prefs.getString('displayText$checkTitle')!;
+  //     // titleValue = prefs.getString('displayText$checkTitle')!;
 
-      // if (prefs.getString('displayText$checkTitle') == 'precautions') {
-      //   precInfo = prefs.getString('displayTextprecautions')!;
-      //   // titleValue = prefs.getString('displayTextprecautions')!;
-      // }
-    }
-    // isLoading = false;
-  }
+  //     // if (prefs.getString('displayText$checkTitle') == 'precautions') {
+  //     //   precInfo = prefs.getString('displayTextprecautions')!;
+  //     //   // titleValue = prefs.getString('displayTextprecautions')!;
+  //     // }
+  //   }
+  //   // isLoading = false;
+  // }
 
   // Returning stored value
 
-  Future<void> getLangCodesFromSharedPref() async {
-    final prefs = await SharedPreferences.getInstance();
+  // Future<void> getLangCodesFromSharedPref() async {
+  //   final prefs = await SharedPreferences.getInstance();
 
-    pastLocale = prefs.getString('pastLangCode');
-    currentLocale = prefs.getString('currentLangCode');
-    String isChanged = prefs.getString('isChanged')!;
-    String locChanged = prefs.getString('locChanged')!;
+  //   pastLocale = prefs.getString('pastLangCode');
+  //   currentLocale = prefs.getString('currentLangCode');
+  //   String isChanged = prefs.getString('isChanged')!;
+  //   String locChanged = prefs.getString('locChanged')!;
 
-    log('Loc Changed - $locChanged');
-    log('GETTING LANG CODES - $pastLocale, $currentLocale');
+  //   log('Loc Changed - $locChanged');
+  //   log('GETTING LANG CODES - $pastLocale, $currentLocale');
 
-    if (widget.titleTxt == 'preventions') {
-      print('-----------------HERE');
-      await prefs.setString('checkTitle', 'preventions');
-      if (isChanged == 'true' || locChanged == 'true') {
-        translateContent('preventions');
-        // prevInfo = titleValue;
-        // setState(() {});
-      }
-    }
-    if (widget.titleTxt == 'precautions') {
-      print('-----------------HERE');
-      await prefs.setString('checkTitle', 'precautions');
-      if (isChanged == 'true' || locChanged == 'true') {
-        translateContent('precautions');
-        log('Prec Info - $titleValue');
-        // precInfo = titleValue;
-        // setState(() {});
-      }
-    }
-    // else if (widget.titleTxt == 'precautions') {
-    //   testText = 'This is precautions.';
-    //   // testText = prefs.getString('precautions')!;
-    //   translateContent('precautions', testText);
-    // }
+  //   if (widget.titleTxt == 'preventions') {
+  //     print('-----------------HERE');
+  //     await prefs.setString('checkTitle', 'preventions');
+  //     if (isChanged == 'true' || locChanged == 'true') {
+  //       translateContent('preventions');
+  //       // prevInfo = titleValue;
+  //       // setState(() {});
+  //     }
+  //   }
+  //   if (widget.titleTxt == 'precautions') {
+  //     print('-----------------HERE');
+  //     await prefs.setString('checkTitle', 'precautions');
+  //     if (isChanged == 'true' || locChanged == 'true') {
+  //       translateContent('precautions');
+  //       log('Prec Info - $titleValue');
+  //       // precInfo = titleValue;
+  //       // setState(() {});
+  //     }
+  //   }
+  //   // else if (widget.titleTxt == 'precautions') {
+  //   //   testText = 'This is precautions.';
+  //   //   // testText = prefs.getString('precautions')!;
+  //   //   translateContent('precautions', testText);
+  //   // }
 
-    // String testText = 'Hello';
-    // log('B4 Trasnlation - $testText');
+  //   // String testText = 'Hello';
+  //   // log('B4 Trasnlation - $testText');
 
-    // if (pastLocale != null && currentLocale != null) {
-    //   final translation = await testText.translate(
-    //     from: 'en',
-    //     to: 'hi',
-    //     // from: pastLocale!,
-    //     // to: currentLocale!,
-    //   );
+  //   // if (pastLocale != null && currentLocale != null) {
+  //   //   final translation = await testText.translate(
+  //   //     from: 'en',
+  //   //     to: 'hi',
+  //   //     // from: pastLocale!,
+  //   //     // to: currentLocale!,
+  //   //   );
 
-    //   testText = translation.text;
-    //   log('After Trasnlation - $testText');
+  //   //   testText = translation.text;
+  //   //   log('After Trasnlation - $testText');
 
-    //   // setState(() {
-    //   //   titleValue = translation.text;
-    //   // });
-    // }
-  }
+  //   //   // setState(() {
+  //   //   //   titleValue = translation.text;
+  //   //   // });
+  //   // }
+  // }
 
-  void translateContent(String setKey) async {
-    final prefs = await SharedPreferences.getInstance();
-    // testText = prefs.getString(setKey)!;
+  // void translateContent(String setKey) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   // testText = prefs.getString(setKey)!;
 
-    if (prefs.getString('displayText$setKey') == null) {
-      //When app is runned for the very first time.
-      log('APP RUNNED FIRST TIME');
-      toBeTranslated = prefs.getString(setKey)!;
-    } else {
-      toBeTranslated = prefs.getString('displayText$setKey')!;
-    }
+  //   if (prefs.getString('displayText$setKey') == null) {
+  //     //When app is runned for the very first time.
+  //     log('APP RUNNED FIRST TIME');
+  //     toBeTranslated = prefs.getString(setKey)!;
+  //   } else {
+  //     toBeTranslated = prefs.getString('displayText$setKey')!;
+  //   }
 
-    // log('B4 Trasnlation - $toBeTranslated');
+  //   // log('B4 Trasnlation - $toBeTranslated');
 
-    final translation = await toBeTranslated.translate(
-      from: pastLocale!,
-      to: currentLocale!,
-    );
+  //   final translation = await toBeTranslated.translate(
+  //     from: pastLocale!,
+  //     to: currentLocale!,
+  //   );
 
-    titleValue = translation.text;
-    // log('After Trasnlation - $titleValue');
+  //   titleValue = translation.text;
+  //   // log('After Trasnlation - $titleValue');
 
-    await prefs.setString('displayText$setKey', titleValue);
-    await prefs.setString('isChanged', 'false');
+  //   await prefs.setString('displayText$setKey', titleValue);
+  //   await prefs.setString('isChanged', 'false');
 
-    isLoading = false;
+  //   isLoading = false;
 
-    closeOpenData();
+  //   closeOpenData();
 
-    await prefs.setString('locChanged', 'false');
+  //   await prefs.setString('locChanged', 'false');
 
-    setState(() {});
+  //   setState(() {});
 
-    // if (checkPrev != titleValue) {
-    //   await prefs.setString(setKey, titleValue);
-    //   print('PAGE LOADED');
-    //   setState(() {});
-    // }
-  }
+  //   // if (checkPrev != titleValue) {
+  //   //   await prefs.setString(setKey, titleValue);
+  //   //   print('PAGE LOADED');
+  //   //   setState(() {});
+  //   // }
+  // }
 
   @override
   void dispose() {
@@ -173,10 +175,10 @@ class _BodyViewState extends State<BodyView> {
   @override
   Widget build(BuildContext context) {
     log('Body view page');
-    getLangCodesFromSharedPref();
+    // getLangCodesFromSharedPref();
     // setState(() {});
 
-    dummyText = context.formatString(LocaleData.updates, ['']);
+    // dummyText = context.formatString(LocaleData.updates, ['']);
 
     // if (widget.titleTxt != 'Updates') {
     //   dummyText = context.formatString(LocaleData.updates, ['']);
@@ -229,8 +231,14 @@ class _BodyViewState extends State<BodyView> {
                     Expanded(
                       child: Text(
                         (widget.titleTxt == 'preventions')
-                            ? prevInfo
-                            : precInfo,
+                            ? (context
+                                .watch<MongoDatabase>()
+                                .prevInfo
+                                .toString())
+                            : (context
+                                .watch<MongoDatabase>()
+                                .precInfo
+                                .toString()),
                         // titleValue,
                         // widget.titleTxt,
                         // AppLocalizations.of(context)!.helloWorld,

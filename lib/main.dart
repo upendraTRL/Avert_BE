@@ -35,6 +35,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => MongoDatabase()),
       ],
       child: MaterialApp(
         // locale: Locale('fr'),

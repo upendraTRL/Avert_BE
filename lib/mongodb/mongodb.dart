@@ -1,12 +1,21 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_1/mongodb/constant.dart';
 import 'package:test_1/mongodb/user_model.dart';
+import 'package:translator/translator.dart';
 
-class MongoDatabase {
+class MongoDatabase extends ChangeNotifier {
   static var db, userCollection, disasterInfoCollection;
+
+  String prevInfo;
+  String precInfo;
+  MongoDatabase({
+    this.prevInfo = 'Loading...',
+    this.precInfo = 'Loading...',
+  });
 
   static connect() async {
     db = await Db.create(MONGO_CONN_URL);
@@ -22,38 +31,72 @@ class MongoDatabase {
     return arrData;
   }
 
-  //USE FOR QUERY
-  // static Future<List<Map<String, dynamic>>> getQueryData(
-  static Future<void> getQueryData(String userAddress) async {
-    final data = await disasterInfoCollection.findOne({"address": userAddress});
-
-    // log(data["preventions"]);
+  void storedPrevPrec() async {
+    log('Prev-Prec Info Available');
 
     final prefs = await SharedPreferences.getInstance();
+    prevInfo = prefs.getString('preventions')!;
+    precInfo = prefs.getString('precautions')!;
+    notifyListeners();
+  }
 
-    if (prefs.getString('isChanged') == null) {
-      await prefs.setString('isChanged', 'true');
-    }
+  void translatedPrevPrec() async {
+    //Dropdown language change activity
+    log('Translated');
+    final prefs = await SharedPreferences.getInstance();
+
+    prevInfo = prefs.getString('preventions')!;
+    precInfo = prefs.getString('precautions')!;
+
+    String pastLocale = prefs.getString('pastLangCode')!;
+    String currentLocale = prefs.getString('currentLangCode')!;
+
+    final translationPrev = await prevInfo.translate(
+      from: pastLocale,
+      to: currentLocale,
+    );
+
+    final translationPrec = await precInfo.translate(
+      from: pastLocale,
+      to: currentLocale,
+    );
+
+    prevInfo = translationPrev.text;
+    precInfo = translationPrec.text;
+
+    await prefs.setString('preventions', prevInfo);
+    await prefs.setString('precautions', precInfo);
+
+    await prefs.setString('isChanged', 'false');
+
+    notifyListeners();
+  }
+
+  //USE FOR QUERY
+  // static Future<List<Map<String, dynamic>>> getQueryData(
+  Future<void> getQueryData(String userAddress) async {
+    //Location changed - Eng Lang
+    final data = await disasterInfoCollection.findOne({"address": userAddress});
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('currentLocation', userAddress);
+
+    // prevInfo = data["preventions"];
+    // precInfo = data["precautions"];
 
     if (prefs.getString('pastLangCode') == null) {
       await prefs.setString('pastLangCode', 'en');
       await prefs.setString('currentLangCode', 'en');
     }
 
-    // await prefs.setString('preventions', 'This is preventions.');
-    if (prefs.getString('preventions') == null ||
-        prefs.getString('preventions') != data) {
-      await prefs.setString('preventions', data["preventions"]);
-    }
+    log('New Location Prev-Prec Info.');
+    prevInfo = data["preventions"];
+    precInfo = data["precautions"];
 
-    if (prefs.getString('precautions') == null ||
-        prefs.getString('precautions') != data) {
-      await prefs.setString('precautions', data["precautions"]);
+    await prefs.setString('preventions', prevInfo);
+    await prefs.setString('precautions', precInfo);
 
-      await prefs.setString('caution', data["disaster_type"]);
-      await prefs.setString('locChanged', 'true');
-
-    }
+    notifyListeners();
 
     return data;
   }

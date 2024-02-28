@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_1/mongodb/mongodb.dart';
 import 'package:test_1/mongodb/user_model.dart';
@@ -117,6 +118,8 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
   //Geocoding to get address
   _getAddressFromCoordinates() async {
     try {
+      final prefs = await SharedPreferences.getInstance();
+
       List<Placemark> placemarks = await placemarkFromCoordinates(
         _currentLocation!.latitude,
         _currentLocation!.longitude,
@@ -129,16 +132,17 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
       if (userLat >= 18.9220 && userLat <= 19.0596) {
         userAddress = 'Mumbai';
+        await prefs.setString('isLocChanged', 'true');
       }
       if (userLat >= 18.5679 && userLat <= 18.6011) {
         userAddress = 'Pune';
+        await prefs.setString('isLocChanged', 'true');
       }
 
       Placemark place = placemarks[0];
       setState(() {
-        _currentAddress =
-            "${place.subLocality}, ${place.locality}";
-            // "${place.subLocality}, ${place.locality}, ${place.country}";
+        _currentAddress = "${place.subLocality}, ${place.locality}";
+        // "${place.subLocality}, ${place.locality}, ${place.country}";
         addressData = _currentAddress;
       });
     } catch (e) {
@@ -180,7 +184,7 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
                 ),
               )
             : FutureBuilder<bool>(
-                future: getData(),
+                future: getData(context),
                 builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                   if (!snapshot.hasData) {
                     return const SizedBox();
@@ -205,10 +209,25 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     );
   }
 
-  Future<bool> getData() async {
+  Future<bool> getData(BuildContext context) async {
     await Future<dynamic>.delayed(const Duration(milliseconds: 200));
+    final prefs = await SharedPreferences.getInstance();
+
     // MongoDatabase.getQueryData('Mumbai');
-    MongoDatabase.getQueryData(userAddress);
+
+    if (prefs.getString('isChanged') == 'true') {
+      context.read<MongoDatabase>().translatedPrevPrec();
+    }
+
+    if (prefs.getString('currentLocation') != userAddress ||
+        prefs.getString('currentLocation') == null) {
+      //User Loc Changed/First time
+      context.read<MongoDatabase>().getQueryData(userAddress);
+    } else {
+      context.read<MongoDatabase>().storedPrevPrec();
+    }
+
+    // MongoDatabase().getQueryData(userAddress);
     return true;
   }
 
