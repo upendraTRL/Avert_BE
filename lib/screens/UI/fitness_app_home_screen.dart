@@ -59,17 +59,17 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
     int i = 0;
     print('User - ${widget.mobile}');
-    // Timer.periodic(Duration(seconds: 11), (timer) async {
-    //   //code to run on every 5 seconds
-    //   print('object - ${i++}');
-    //   if (isAppend == true) {
-    //     await _updateData(
-    //       widget.mobile,
-    //       latData.toString(),
-    //       longData.toString(),
-    //     );
-    //   }
-    // });
+    Timer.periodic(Duration(seconds: 11), (timer) async {
+      //code to run on every 5 seconds
+      print('object - ${i++}');
+      if (isAppend == true) {
+        await _updateData(
+          widget.mobile,
+          latData.toString(),
+          longData.toString(),
+        );
+      }
+    });
 
     //Get Address Timer
     Timer.periodic(Duration(seconds: 6), (timer) {
@@ -290,8 +290,8 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
   }
 
   //MongoDB functions
-  // Future<void> _updateData(String mobileNo, String lat, String long) async {
-  //   final updateData = Model(mobile: mobileNo, latitude: lat, longitude: long);
-  //   await MongoDatabase.update(updateData);
-  // }
+  Future<void> _updateData(String mobileNo, String lat, String long) async {
+    final updateData = Model(mobile: mobileNo, latitude: lat, longitude: long);
+    await MongoDatabase.update(updateData);
+  }
 }
