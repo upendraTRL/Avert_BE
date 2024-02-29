@@ -215,15 +215,23 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
     // MongoDatabase.getQueryData('Mumbai');
 
+    //First time app run
+    if (prefs.getString('pastLangCode') == null ||
+        prefs.getString('currentLocation') == null) {
+      context.read<MongoDatabase>().firstTimeLoc(userAddress);
+    }
+
+    //Lang Change
     if (prefs.getString('isChanged') == 'true') {
       context.read<MongoDatabase>().translatedPrevPrec();
     }
 
-    if (prefs.getString('currentLocation') != userAddress ||
-        prefs.getString('currentLocation') == null) {
-      //User Loc Changed/First time
+    //Location Updated with Stored Lang
+    if (prefs.getString('currentLocation') != userAddress) {
       context.read<MongoDatabase>().getQueryData(userAddress);
+      // context.read<MongoDatabase>().translatedPrevPrec();
     } else {
+      //Daily App Open
       context.read<MongoDatabase>().storedPrevPrec();
     }
 

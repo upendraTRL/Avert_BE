@@ -40,8 +40,8 @@ class MongoDatabase extends ChangeNotifier {
     notifyListeners();
   }
 
+  //Dropdown language change
   void translatedPrevPrec() async {
-    //Dropdown language change activity
     log('Translated');
     final prefs = await SharedPreferences.getInstance();
 
@@ -84,12 +84,40 @@ class MongoDatabase extends ChangeNotifier {
     // prevInfo = data["preventions"];
     // precInfo = data["precautions"];
 
-    if (prefs.getString('pastLangCode') == null) {
-      await prefs.setString('pastLangCode', 'en');
-      await prefs.setString('currentLangCode', 'en');
-    }
+    // if (prefs.getString('pastLangCode') == null) {
+    //   await prefs.setString('pastLangCode', 'en');
+    //   await prefs.setString('currentLangCode', 'en');
+    // }
 
-    log('New Location Prev-Prec Info.');
+    log('Updated Location.');
+    prevInfo = data["preventions"];
+    precInfo = data["precautions"];
+
+
+    await prefs.setString('preventions', prevInfo);
+    await prefs.setString('precautions', precInfo);
+    
+    translatedPrevPrec();
+
+    notifyListeners();
+
+    return data;
+  }
+
+  //First time app run
+  Future<void> firstTimeLoc(String userAddress) async {
+    log('First Location.');
+    final data = await disasterInfoCollection.findOne({"address": userAddress});
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString('currentLocation', userAddress);
+
+    // prevInfo = data["preventions"];
+    // precInfo = data["precautions"];
+
+    await prefs.setString('pastLangCode', 'en');
+    await prefs.setString('currentLangCode', 'en');
+
     prevInfo = data["preventions"];
     precInfo = data["precautions"];
 
