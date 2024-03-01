@@ -5,8 +5,8 @@ const List<MapLocale> LOCALES = [
   MapLocale('de', LocaleData.DE),
   MapLocale('hi', LocaleData.HI),
   MapLocale('mr', LocaleData.MR),
-  MapLocale('gj', LocaleData.GJ),
-  MapLocale('tu', LocaleData.TU),
+  MapLocale('gu', LocaleData.GU),
+  MapLocale('te', LocaleData.TE),
 ];
 
 mixin LocaleData {
@@ -88,7 +88,7 @@ mixin LocaleData {
         '1. टेबल या डेस्क के नीचे छुपें: भूकंप के समय, तुरंत टेबल या डेस्क के नीचे छुपना सुरक्षित हो सकता है।\n2. बाहर निकलें: इमारतों की शक्तिशाली स्थिति में होने पर बाहर निकलें और खुद को खतरे से दूर रखें।\n3. बच्चों और वृद्धों की देखभाल: बच्चों और वृद्धों को सुरक्षित स्थान पर ले जाएं और उनकी देखभाल करें।\n4. खतरनाक क्षेत्रों से दूर रहें: सुरक्षित स्थानों को पहचानें और खतरनाक क्षेत्रों से दूर रहें।',
   };
 
-  static const Map<String, dynamic> GJ = {
+  static const Map<String, dynamic> GU = {
     title: 'ગુજરાતી',
     updates: 'અપડેટ્સ',
     features: 'વિશેષતા',
@@ -107,7 +107,7 @@ mixin LocaleData {
         '1. टेबल या डेस्क के नीचे छुपें: भूकंप के समय, तुरंत टेबल या डेस्क के नीचे छुपना सुरक्षित हो सकता है।\n2. बाहर निकलें: इमारतों की शक्तिशाली स्थिति में होने पर बाहर निकलें और खुद को खतरे से दूर रखें।\n3. बच्चों और वृद्धों की देखभाल: बच्चों और वृद्धों को सुरक्षित स्थान पर ले जाएं और उनकी देखभाल करें।\n4. खतरनाक क्षेत्रों से दूर रहें: सुरक्षित स्थानों को पहचानें और खतरनाक क्षेत्रों से दूर रहें।',
   };
 
-  static const Map<String, dynamic> TU = {
+  static const Map<String, dynamic> TE = {
     title: 'తెలుగు',
     updates: 'నవీకరణలు',
     features: 'లక్షణాలు',

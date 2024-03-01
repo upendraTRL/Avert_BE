@@ -91,6 +91,13 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
     log('Value setting - $addressData');
 
     await prefs.setString('userAddress', addressData);
+
+    await MongoDatabase.updateDisplayAddress(userAddress, addressData);
+
+    // if (prefs.getString('currentUserAddress') == null ||
+    //     prefs.getString('currentUserAddress') != addressData) {
+    //   await prefs.setString('currentUserAddress', addressData);
+    // }
   }
 
   //Location logic
@@ -130,12 +137,23 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
       log('User Lat - $userLat');
 
+      if (userLat >= 16.4151 && userLat <= 16.7050) {
+        userAddress = 'Kolhapur';
+        await prefs.setString('isLocChanged', 'true');
+      }
       if (userLat >= 18.9220 && userLat <= 19.0596) {
         userAddress = 'Mumbai';
         await prefs.setString('isLocChanged', 'true');
       }
-      if (userLat >= 18.5679 && userLat <= 18.6011) {
+      if (userLat >= 18.5074 && userLat <= 18.5679) {
         userAddress = 'Pune';
+        await prefs.setString('isLocChanged', 'true');
+      }
+      if (userLat >= 18.4088 &&
+          userLat <= 18.7062 &&
+          userLong >= 76.5604 &&
+          userLong <= 76.9384) {
+        userAddress = 'Latur';
         await prefs.setString('isLocChanged', 'true');
       }
 
@@ -291,7 +309,12 @@ class _FitnessAppHomeScreenState extends State<FitnessAppHomeScreen>
 
   //MongoDB functions
   Future<void> _updateData(String mobileNo, String lat, String long) async {
-    final updateData = Model(mobile: mobileNo, latitude: lat, longitude: long);
+    final updateData = Model(
+      mobile: mobileNo,
+      latitude: lat,
+      longitude: long,
+      address: addressData,
+    );
     await MongoDatabase.update(updateData);
   }
 }

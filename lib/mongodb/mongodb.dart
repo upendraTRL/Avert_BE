@@ -12,9 +12,13 @@ class MongoDatabase extends ChangeNotifier {
 
   String prevInfo;
   String precInfo;
+  String caution;
+  String currentUserAddress;
   MongoDatabase({
     this.prevInfo = 'Loading...',
     this.precInfo = 'Loading...',
+    this.caution = 'Loading...',
+    this.currentUserAddress = 'Loading...',
   });
 
   static connect() async {
@@ -37,6 +41,9 @@ class MongoDatabase extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     prevInfo = prefs.getString('preventions')!;
     precInfo = prefs.getString('precautions')!;
+    caution = prefs.getString('caution')!;
+    currentUserAddress = prefs.getString('currentUserAddress')!;
+
     notifyListeners();
   }
 
@@ -47,6 +54,8 @@ class MongoDatabase extends ChangeNotifier {
 
     prevInfo = prefs.getString('preventions')!;
     precInfo = prefs.getString('precautions')!;
+    caution = prefs.getString('caution')!;
+    currentUserAddress = prefs.getString('currentUserAddress')!;
 
     String pastLocale = prefs.getString('pastLangCode')!;
     String currentLocale = prefs.getString('currentLangCode')!;
@@ -61,11 +70,25 @@ class MongoDatabase extends ChangeNotifier {
       to: currentLocale,
     );
 
+    final translationCaution = await caution.translate(
+      from: pastLocale,
+      to: currentLocale,
+    );
+
+    final translationUserAddress = await currentUserAddress.translate(
+      from: pastLocale,
+      to: currentLocale,
+    );
+
     prevInfo = translationPrev.text;
     precInfo = translationPrec.text;
+    caution = translationCaution.text;
+    currentUserAddress = translationUserAddress.text;
 
     await prefs.setString('preventions', prevInfo);
     await prefs.setString('precautions', precInfo);
+    await prefs.setString('caution', caution);
+    await prefs.setString('currentUserAddress', currentUserAddress);
 
     await prefs.setString('isChanged', 'false');
 
@@ -92,14 +115,18 @@ class MongoDatabase extends ChangeNotifier {
     log('Updated Location.');
     prevInfo = data["preventions"];
     precInfo = data["precautions"];
-
+    caution = data["disaster_type"];
+    currentUserAddress = data["displayAddress"];
+    // currentUserAddress = prefs.getString('currentUserAddress')!;
 
     await prefs.setString('preventions', prevInfo);
     await prefs.setString('precautions', precInfo);
-    
+    await prefs.setString('caution', caution);
+    await prefs.setString('currentUserAddress', currentUserAddress);
+
     translatedPrevPrec();
 
-    notifyListeners();
+    // notifyListeners();
 
     return data;
   }
@@ -111,6 +138,7 @@ class MongoDatabase extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setString('currentLocation', userAddress);
+    // currentUserAddress = prefs.getString('currentUserAddress')!;
 
     // prevInfo = data["preventions"];
     // precInfo = data["precautions"];
@@ -120,13 +148,29 @@ class MongoDatabase extends ChangeNotifier {
 
     prevInfo = data["preventions"];
     precInfo = data["precautions"];
+    caution = data["disaster_type"];
+    currentUserAddress = data["displayAddress"];
+    // currentUserAddress = currentUserAddress;
 
     await prefs.setString('preventions', prevInfo);
     await prefs.setString('precautions', precInfo);
+    await prefs.setString('caution', caution);
+    await prefs.setString('currentUserAddress', currentUserAddress);
 
     notifyListeners();
 
     return data;
+  }
+
+  static Future<void> updateDisplayAddress(String key, String address) async {
+    log('Update User Loc');
+
+    //Dynamic Display Loc Update
+    log('---------------- $key');
+    var replaceAddress = await disasterInfoCollection.findOne({"address": key});
+    replaceAddress["displayAddress"] = address;
+
+    await disasterInfoCollection.replaceOne({"address": key}, replaceAddress);
   }
 
   static Future<void> update(Model data) async {
@@ -136,6 +180,7 @@ class MongoDatabase extends ChangeNotifier {
     response["mobile"] = data.mobile;
     response["latitude"] = data.latitude;
     response["longitude"] = data.longitude;
+
     await userCollection.replaceOne({"mobile": data.mobile}, response);
 
     inspect(response);

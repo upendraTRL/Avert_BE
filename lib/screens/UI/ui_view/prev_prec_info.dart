@@ -5,6 +5,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:test_1/localization/locales.dart';
+import 'package:test_1/mongodb/mongodb.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
 import 'package:test_1/main.dart';
@@ -115,9 +116,13 @@ class _PrevPrecInfoState extends State<PrevPrecInfo> {
                                               padding: EdgeInsets.only(
                                                   left: 4, bottom: 2),
                                               child: Text(
-                                                (userAddress != '')
-                                                    ? userAddress
-                                                    : 'Loading...',
+                                                context
+                                                    .watch<MongoDatabase>()
+                                                    .currentUserAddress
+                                                    .toString(),
+                                                // (userAddress != '')
+                                                //     ? userAddress
+                                                //     : 'Loading...',
                                                 // context.formatString(
                                                 //     LocaleData.infoAddress, []),
                                                 textAlign: TextAlign.center,
@@ -170,9 +175,13 @@ class _PrevPrecInfoState extends State<PrevPrecInfo> {
                                               padding: EdgeInsets.only(
                                                   left: 4, bottom: 2),
                                               child: Text(
-                                                (caution != '')
-                                                    ? 'Caution: $caution'
-                                                    : 'Loading...',
+                                                context
+                                                    .watch<MongoDatabase>()
+                                                    .caution
+                                                    .toString(),
+                                                // (caution != '')
+                                                //     ? 'Caution: $caution'
+                                                //     : 'Loading...',
                                                 // context.formatString(
                                                 //     LocaleData.infoCalamity,
                                                 //     []),

@@ -69,11 +69,11 @@ class _LangDropdownState extends State<LangDropdown> {
           child: Text('मराठी'),
         ),
         DropdownMenuItem(
-          value: 'gj',
+          value: 'gu',
           child: Text('ગુજરાતી'),
         ),
         DropdownMenuItem(
-          value: 'tu',
+          value: 'te',
           child: Text('తెలుగు'),
         ),
       ],
@@ -90,10 +90,10 @@ class _LangDropdownState extends State<LangDropdown> {
       _flutterLocalization.translate('hi');
     } else if (value == 'mr') {
       _flutterLocalization.translate('mr');
-    } else if (value == 'gj') {
-      _flutterLocalization.translate('gj');
-    } else if (value == 'tu') {
-      _flutterLocalization.translate('tu');
+    } else if (value == 'gu') {
+      _flutterLocalization.translate('gu');
+    } else if (value == 'te') {
+      _flutterLocalization.translate('te');
     } else {
       return;
     }
