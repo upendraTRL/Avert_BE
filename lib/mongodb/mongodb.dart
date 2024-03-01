@@ -35,98 +35,135 @@ class MongoDatabase extends ChangeNotifier {
     return arrData;
   }
 
+  //App reload info display
   void storedPrevPrec() async {
     log('Prev-Prec Info Available');
 
     final prefs = await SharedPreferences.getInstance();
-    prevInfo = prefs.getString('preventions')!;
-    precInfo = prefs.getString('precautions')!;
-    caution = prefs.getString('caution')!;
-    currentUserAddress = prefs.getString('currentUserAddress')!;
+    prevInfo = prefs.getString('displayPreventions')!;
+    precInfo = prefs.getString('displayPrecautions')!;
+    caution = prefs.getString('displayCaution')!;
+    currentUserAddress = prefs.getString('displayCurrentUserAddress')!;
+
+    log('STORED CHECK - $caution');
 
     notifyListeners();
   }
+
+  void displayDefaultInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    prevInfo = prefs.getString('defaultPreventions')!;
+    precInfo = prefs.getString('defaultPrecautions')!;
+    caution = prefs.getString('defaultCaution')!;
+    currentUserAddress = prefs.getString('defaultCurrentUserAddress')!;
+
+    await prefs.setString('displayPreventions', prevInfo);
+    await prefs.setString('displayPrecautions', precInfo);
+    await prefs.setString('displayCaution', caution);
+    await prefs.setString('displayCurrentUserAddress', currentUserAddress);
+
+    log('ENGLISH INFO - $caution');
+
+    notifyListeners();
+  }
+
+  // Future<String> translateEngine(String toText, String currentLocale) async {
+  //   final translated = await caution.translate(
+  //     from: 'en',
+  //     to: currentLocale,
+  //   );
+
+  //   String returnText = translated.text;
+
+  //   return returnText;
+  // }
 
   //Dropdown language change
   void translatedPrevPrec() async {
     log('Translated');
     final prefs = await SharedPreferences.getInstance();
 
-    prevInfo = prefs.getString('preventions')!;
-    precInfo = prefs.getString('precautions')!;
-    caution = prefs.getString('caution')!;
-    currentUserAddress = prefs.getString('currentUserAddress')!;
+    String prevInfoDefault = prefs.getString('defaultPreventions')!;
+    String precInfoDefault = prefs.getString('defaultPrecautions')!;
+    String cautionDefault = prefs.getString('defaultCaution')!;
+    String currentUserAddressDefault =
+        prefs.getString('defaultCurrentUserAddress')!;
 
-    String pastLocale = prefs.getString('pastLangCode')!;
     String currentLocale = prefs.getString('currentLangCode')!;
 
-    final translationPrev = await prevInfo.translate(
-      from: pastLocale,
-      to: currentLocale,
-    );
+    if (currentLocale != 'en') {
+      log('Not English - $currentLocale');
+      // log('FROM ENGLISH - $cautionDefault');
 
-    final translationPrec = await precInfo.translate(
-      from: pastLocale,
-      to: currentLocale,
-    );
+      final translationCaution = await cautionDefault.translate(
+        from: 'en',
+        to: currentLocale,
+      );
 
-    final translationCaution = await caution.translate(
-      from: pastLocale,
-      to: currentLocale,
-    );
+      final translationUserAddress = await currentUserAddressDefault.translate(
+        from: 'en',
+        to: currentLocale,
+      );
 
-    final translationUserAddress = await currentUserAddress.translate(
-      from: pastLocale,
-      to: currentLocale,
-    );
+      final translationPrev = await prevInfoDefault.translate(
+        from: 'en',
+        to: currentLocale,
+      );
 
-    prevInfo = translationPrev.text;
-    precInfo = translationPrec.text;
-    caution = translationCaution.text;
-    currentUserAddress = translationUserAddress.text;
+      final translationPrec = await precInfoDefault.translate(
+        from: 'en',
+        to: currentLocale,
+      );
 
-    await prefs.setString('preventions', prevInfo);
-    await prefs.setString('precautions', precInfo);
-    await prefs.setString('caution', caution);
-    await prefs.setString('currentUserAddress', currentUserAddress);
+      // caution = futureCaution.toString();
 
-    await prefs.setString('isChanged', 'false');
+      caution = translationCaution.text;
+      currentUserAddress = translationUserAddress.text;
+      prevInfo = translationPrev.text;
+      precInfo = translationPrec.text;
 
-    notifyListeners();
+      log('TRANSLATED - $precInfo');
+
+      await prefs.setString('displayPreventions', prevInfo);
+      await prefs.setString('displayPrecautions', precInfo);
+      await prefs.setString('displayCaution', caution);
+      await prefs.setString('displayCurrentUserAddress', currentUserAddress);
+
+      await prefs.setString('isChanged', 'false');
+
+      notifyListeners();
+    } else {
+      displayDefaultInfo();
+    }
   }
 
-  //USE FOR QUERY
-  // static Future<List<Map<String, dynamic>>> getQueryData(
+  //Location changed - Eng Lang
   Future<void> getQueryData(String userAddress) async {
-    //Location changed - Eng Lang
+    log('Updated Location.');
+
     final data = await disasterInfoCollection.findOne({"address": userAddress});
     final prefs = await SharedPreferences.getInstance();
 
     await prefs.setString('currentLocation', userAddress);
 
-    // prevInfo = data["preventions"];
-    // precInfo = data["precautions"];
-
-    // if (prefs.getString('pastLangCode') == null) {
-    //   await prefs.setString('pastLangCode', 'en');
-    //   await prefs.setString('currentLangCode', 'en');
-    // }
-
-    log('Updated Location.');
     prevInfo = data["preventions"];
     precInfo = data["precautions"];
     caution = data["disaster_type"];
     currentUserAddress = data["displayAddress"];
     // currentUserAddress = prefs.getString('currentUserAddress')!;
 
-    await prefs.setString('preventions', prevInfo);
-    await prefs.setString('precautions', precInfo);
-    await prefs.setString('caution', caution);
-    await prefs.setString('currentUserAddress', currentUserAddress);
+    await prefs.setString('defaultPreventions', prevInfo);
+    await prefs.setString('defaultPrecautions', precInfo);
+    await prefs.setString('defaultCaution', caution);
+    await prefs.setString('defaultCurrentUserAddress', currentUserAddress);
+
+    await prefs.setString('displayPreventions', prevInfo);
+    await prefs.setString('displayPrecautions', precInfo);
+    await prefs.setString('displayCaution', caution);
+    await prefs.setString('displayCurrentUserAddress', currentUserAddress);
 
     translatedPrevPrec();
-
-    // notifyListeners();
 
     return data;
   }
@@ -150,12 +187,16 @@ class MongoDatabase extends ChangeNotifier {
     precInfo = data["precautions"];
     caution = data["disaster_type"];
     currentUserAddress = data["displayAddress"];
-    // currentUserAddress = currentUserAddress;
 
-    await prefs.setString('preventions', prevInfo);
-    await prefs.setString('precautions', precInfo);
-    await prefs.setString('caution', caution);
-    await prefs.setString('currentUserAddress', currentUserAddress);
+    await prefs.setString('defaultPreventions', prevInfo);
+    await prefs.setString('defaultPrecautions', precInfo);
+    await prefs.setString('defaultCaution', caution);
+    await prefs.setString('defaultCurrentUserAddress', currentUserAddress);
+
+    await prefs.setString('displayPreventions', prevInfo);
+    await prefs.setString('displayPrecautions', precInfo);
+    await prefs.setString('displayCaution', caution);
+    await prefs.setString('displayCurrentUserAddress', currentUserAddress);
 
     notifyListeners();
 

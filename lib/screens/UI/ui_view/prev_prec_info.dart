@@ -37,7 +37,7 @@ class _PrevPrecInfoState extends State<PrevPrecInfo> {
     final prefs = await SharedPreferences.getInstance();
 
     userAddress = prefs.getString('userAddress')!;
-    caution = prefs.getString('caution')!;
+    // caution = prefs.getString('caution')!;
 
     if (isLoading == true) {
       isLoading = false;
