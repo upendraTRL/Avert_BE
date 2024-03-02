@@ -1,130 +1,58 @@
-import 'dart:async';
 import 'dart:developer';
-import 'dart:isolate';
 
-import 'package:geocoding/geocoding.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter_localization/flutter_localization.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_1/localization/locales.dart';
+import 'package:test_1/mongodb/mongodb.dart';
 import 'package:test_1/provider/auth_provider.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
+import 'package:test_1/main.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
 import 'package:test_1/screens/welcome_screen.dart';
 
-class MediterranesnDietView extends StatefulWidget {
-  const MediterranesnDietView({
-    Key? key,
-    this.animationController,
+class PrevPrecInfo extends StatefulWidget {
+  const PrevPrecInfo({
+    super.key,
     this.animation,
-    // this.userAddress,
-  }) : super(key: key);
+    this.animationController,
+  });
 
   final AnimationController? animationController;
   final Animation<double>? animation;
-  // final String? userAddress;
 
   @override
-  State<MediterranesnDietView> createState() => _MediterranesnDietViewState();
+  State<PrevPrecInfo> createState() => _PrevPrecInfoState();
 }
 
-class _MediterranesnDietViewState extends State<MediterranesnDietView> {
-  bool isAddressLoading = true;
-  String userAddress = 'India';
+class _PrevPrecInfoState extends State<PrevPrecInfo> {
+  String userAddress = '';
+  String caution = '';
+  bool isLoading = true;
 
-  @override
-  void initState() {
-    super.initState();
-
-    Timer(Duration(seconds: 2), () {
-      _getIntFromSharedPref();
-      setState(() {});
-    });
-
-    // Timer.periodic(Duration(seconds: 10), (timer) {
-    //   if (widget.userAddress != '') {
-    //     // if (mounted) {
-    //     setState(() {
-    //       log('Mediterranean Address - ${widget.userAddress}');
-    //       isAddressLoading = false;
-    //     });
-    //     // }
-
-    //     timer.cancel();
-    //   }
-    // });
-
-    // int i = 0;
-
-    // Timer.periodic(Duration(seconds: 5), (timer) async {
-    //   //code to run on every 5 seconds
-    //   log('Address updated - ${i++}');
-    //   _getAddressFromCoordinates();
-
-    //   if (isAddressLoading == false) {
-    //     timer.cancel();
-    //   }
-    // });
-  }
-
-  //Location logic
-  // Position? _currentLocation;
-  // late bool servicePermission = false;
-  // late LocationPermission permission;
-
-  // String _currentAddress = '';
-  // String latData = '111';
-  // String longData = '222';
-  // String addressData = '';
-
-  // //Geocoding to get address
-  // _getAddressFromCoordinates() async {
-  //   try {
-  //     List<Placemark> placemarks = await placemarkFromCoordinates(
-  //       _currentLocation!.latitude,
-  //       _currentLocation!.longitude,
-  //     );
-
-  //     Placemark place = placemarks[0];
-  //     setState(() {
-  //       _currentAddress = "${place.locality}, ${place.country}";
-  //       // _currentAddress =
-  //       //     "${place.subLocality}, ${place.locality}, ${place.country}";
-  //       addressData = _currentAddress;
-
-  //       print('Address - ${_currentAddress}');
-  //       print('Location - ${_currentLocation}');
-  //     });
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  //   // log('Address - $_currentAddress');
-  //   isAddressLoading = false;
-  //   setState(() {});
-  // }
-
-  //Returning stored value
-  Future<String> _getIntFromSharedPref() async {
+  Future<void> getAddressFromSharedPref() async {
     final prefs = await SharedPreferences.getInstance();
+
     userAddress = prefs.getString('userAddress')!;
-    log('Getting value - $userAddress');
+    // caution = prefs.getString('caution')!;
 
-    // if (startupNumber == null) return 0;
+    if (isLoading == true) {
+      isLoading = false;
+      setState(() {});
 
-    return userAddress;
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
+      log('User Address - $userAddress');
+      log('Caution Type - $caution');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final ap = Provider.of<AuthProvider>(context, listen: false);
+    getAddressFromSharedPref();
+
     return AnimatedBuilder(
       animation: widget.animationController!,
       builder: (BuildContext context, Widget? child) {
@@ -156,13 +84,6 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                     Padding(
                       padding:
                           const EdgeInsets.only(top: 16, left: 16, right: 16),
-                      // child: isAddressLoading == true
-                      //     ? const Center(
-                      //         child: CircularProgressIndicator(
-                      //           color: Colors.purple,
-                      //         ),
-                      //       )
-                      //     : Row(
                       child: Row(
                         children: <Widget>[
                           Expanded(
@@ -184,38 +105,28 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                         ),
                                       ),
                                       Padding(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: EdgeInsets.all(8.0),
                                         child: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: <Widget>[
-                                            IconButton(
-                                              onPressed: () {
-                                                ap.userSignOut().then(
-                                                      (value) => Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              const WelcomeScreen(),
-                                                        ),
-                                                      ),
-                                                    );
-                                              },
-                                              icon: const Icon(
-                                                Icons.exit_to_app,
-                                                color: Colors.black,
-                                              ),
-                                            ),
                                             Padding(
-                                              padding: const EdgeInsets.only(
+                                              padding: EdgeInsets.only(
                                                   left: 4, bottom: 2),
                                               child: Text(
-                                                // userAddress,
-                                                'Shivaji Nagar, Pune',
+                                                context
+                                                    .watch<MongoDatabase>()
+                                                    .currentUserAddress
+                                                    .toString(),
+                                                // (userAddress != '')
+                                                //     ? userAddress
+                                                //     : 'Loading...',
+                                                // context.formatString(
+                                                //     LocaleData.infoAddress, []),
                                                 textAlign: TextAlign.center,
-                                                style: const TextStyle(
+                                                style: TextStyle(
                                                     fontFamily: FitnessAppTheme
                                                         .fontName,
                                                     fontWeight: FontWeight.w500,
@@ -226,7 +137,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                                     ),
                                               ),
                                             ),
-                                            const Row(
+                                            Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               crossAxisAlignment:
@@ -252,7 +163,7 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                               Radius.circular(4.0)),
                                         ),
                                       ),
-                                      const Padding(
+                                      Padding(
                                         padding: EdgeInsets.all(8.0),
                                         child: Column(
                                           mainAxisAlignment:
@@ -264,55 +175,16 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                                               padding: EdgeInsets.only(
                                                   left: 4, bottom: 2),
                                               child: Text(
-                                                'Weather: Sunny',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontFamily: FitnessAppTheme
-                                                        .fontName,
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 18,
-                                                    letterSpacing: -0.1,
-                                                    color: FitnessAppTheme.grey
-                                                    // .withOpacity(0.5),
-                                                    ),
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                            )
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      Container(
-                                        height: 30,
-                                        width: 2,
-                                        decoration: BoxDecoration(
-                                          color: HexColor('#F56E98')
-                                              .withOpacity(0.5),
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(4.0)),
-                                        ),
-                                      ),
-                                      const Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                  left: 4, bottom: 2),
-                                              child: Text(
-                                                'Caution: Earthquake',
+                                                context
+                                                    .watch<MongoDatabase>()
+                                                    .caution
+                                                    .toString(),
+                                                // (caution != '')
+                                                //     ? 'Caution: $caution'
+                                                //     : 'Loading...',
+                                                // context.formatString(
+                                                //     LocaleData.infoCalamity,
+                                                //     []),
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                     fontFamily: FitnessAppTheme
@@ -334,56 +206,6 @@ class _MediterranesnDietViewState extends State<MediterranesnDietView> {
                               ),
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16),
-                            child: Center(
-                              child: Stack(
-                                clipBehavior: Clip.none,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Container(
-                                      width: 100,
-                                      height: 100,
-                                      decoration: BoxDecoration(
-                                        color: FitnessAppTheme.white,
-                                        borderRadius: const BorderRadius.all(
-                                          Radius.circular(100.0),
-                                        ),
-                                        border: Border.all(
-                                            width: 4,
-                                            color: FitnessAppTheme
-                                                .nearlyDarkBlue
-                                                .withOpacity(0.2)),
-                                      ),
-                                      child: const Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Text(
-                                            // '${(31.5  * animation!.value).toInt()}',
-                                            '31.5°C',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontFamily:
-                                                  FitnessAppTheme.fontName,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 24,
-                                              letterSpacing: 0.0,
-                                              color: FitnessAppTheme
-                                                  .nearlyDarkBlue,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
                         ],
                       ),
                     ),

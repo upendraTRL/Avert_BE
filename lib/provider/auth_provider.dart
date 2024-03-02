@@ -1,13 +1,13 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:test_1/models/user_model.dart';
+import 'package:test_1/mongodb/model_firebase.dart';
 import 'package:test_1/screens/otp_screen.dart';
 import 'package:test_1/utils/utils.dart';
 
@@ -59,7 +59,10 @@ class AuthProvider extends ChangeNotifier {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => OtpScreen(verificationId: verificationId),
+                builder: (context) => OtpScreen(
+                  verificationId: verificationId,
+                  mobile: phoneNumber,
+                ),
               ),
             );
           },
@@ -104,7 +107,8 @@ class AuthProvider extends ChangeNotifier {
     DocumentSnapshot snapshot =
         await _firebaseFirestore.collection("users").doc(_uid).get();
     if (snapshot.exists) {
-      print("USER EXISTS");
+      // print("USER EXISTS");
+      log("User Exists");
       return true;
     } else {
       print("NEW USER");

@@ -70,6 +70,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       // print("Calledddddddddddddddd");
       final ap = Provider.of<AuthProvider>(context, listen: false);
       String phoneNumber = phoneController.text.trim();
+      // MongoDatabase(enteredPhone: phoneNumber);
       ap.signInWithPhone(context, "+91$phoneNumber");
     }
 
@@ -127,7 +128,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 width: double.infinity,
                 height: 50,
                 child: CustomButton(
-                    text: 'Send OTP', onPressed: () => sendPhoneNumber()),
+                    text: 'Send OTP',
+                    onPressed: () async {
+                      sendPhoneNumber();
+                    }),
               )
             ],
           ),

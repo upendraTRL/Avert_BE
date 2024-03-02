@@ -1,10 +1,7 @@
 import 'package:hexcolor/hexcolor.dart';
 import 'package:test_1/screens/UI/fitness_app_theme.dart';
 import 'package:test_1/screens/UI/models/meals_list_data.dart';
-import 'package:test_1/main.dart';
 import 'package:flutter/material.dart';
-
-import '../../../main.dart';
 
 class MealsListView extends StatefulWidget {
   const MealsListView(
